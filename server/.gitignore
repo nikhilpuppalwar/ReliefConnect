@@ -1,0 +1,9 @@
+node_modules/
+
+# Local file uploads (development storage)
+# The .gitkeep file inside is still tracked
+uploads/*
+!uploads/.gitkeep
+
+# Environment variables
+.env

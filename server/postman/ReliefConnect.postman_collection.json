@@ -1,0 +1,106 @@
+{
+  "info": {
+    "name": "ReliefConnect API",
+    "_postman_id": "b5ac0d4f-9198-46b4-8f59-0d2f7ee2cfba",
+    "description": "Backend API collection for Disaster Relief Volunteer Coordination System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Admin User\",\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"admin\"\n}" },
+            "url": "{{baseUrl}}/api/auth/register"
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}" },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        },
+        { "name": "Me", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/api/auth/me" } }
+      ]
+    },
+    {
+      "name": "Disasters",
+      "item": [
+        { "name": "Get All", "request": { "method": "GET", "url": "{{baseUrl}}/api/disasters" } },
+        { "name": "Get By Id", "request": { "method": "GET", "url": "{{baseUrl}}/api/disasters/1" } },
+        {
+          "name": "Create",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": { "mode": "formdata", "formdata": [{ "key": "title", "value": "Flood in Zone A", "type": "text" }, { "key": "description", "value": "River overflow", "type": "text" }, { "key": "type", "value": "flood", "type": "text" }, { "key": "severity", "value": "high", "type": "text" }] },
+            "url": "{{baseUrl}}/api/disasters"
+          }
+        },
+        { "name": "Update", "request": { "method": "PUT", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"resolved\"\n}" }, "url": "{{baseUrl}}/api/disasters/1" } },
+        { "name": "Delete", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/api/disasters/1" } },
+        { "name": "Upload Media", "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "body": { "mode": "formdata", "formdata": [{ "key": "media", "type": "file", "src": "" }] }, "url": "{{baseUrl}}/api/disasters/1/media" } }
+      ]
+    },
+    {
+      "name": "Volunteers",
+      "item": [
+        { "name": "Get All", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/api/volunteers" } },
+        { "name": "Get By Id", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/api/volunteers/1" } },
+        { "name": "Update Availability", "request": { "method": "PUT", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"availability_status\": \"available\"\n}" }, "url": "{{baseUrl}}/api/volunteers/1/availability" } },
+        { "name": "Verify Volunteer", "request": { "method": "PUT", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"verified\": true\n}" }, "url": "{{baseUrl}}/api/volunteers/1/verify" } }
+      ]
+    },
+    {
+      "name": "Help Requests",
+      "item": [
+        { "name": "Get All", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/api/requests" } },
+        { "name": "Get My", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/api/requests/my" } },
+        { "name": "Create", "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "body": { "mode": "formdata", "formdata": [{ "key": "title", "value": "Need rescue", "type": "text" }, { "key": "description", "value": "family trapped", "type": "text" }, { "key": "priority", "value": "high", "type": "text" }] }, "url": "{{baseUrl}}/api/requests" } },
+        { "name": "Assign", "request": { "method": "PUT", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"volunteer_id\": 1\n}" }, "url": "{{baseUrl}}/api/requests/1/assign" } },
+        { "name": "Update Status", "request": { "method": "PUT", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"in_progress\"\n}" }, "url": "{{baseUrl}}/api/requests/1/status" } },
+        { "name": "Delete", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/api/requests/1" } }
+      ]
+    },
+    {
+      "name": "Resources",
+      "item": [
+        { "name": "Get All", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/api/resources" } },
+        { "name": "Create", "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Water Bottle\",\n  \"quantity\": 500,\n  \"unit\": \"pcs\"\n}" }, "url": "{{baseUrl}}/api/resources" } },
+        { "name": "Update", "request": { "method": "PUT", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"quantity\": 450\n}" }, "url": "{{baseUrl}}/api/resources/1" } },
+        { "name": "Delete", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/api/resources/1" } },
+        { "name": "Allocate", "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"disaster_id\": 1,\n  \"quantity\": 50,\n  \"note\": \"Urgent allocation\"\n}" }, "url": "{{baseUrl}}/api/resources/1/allocate" } }
+      ]
+    },
+    {
+      "name": "Tasks",
+      "item": [
+        { "name": "Get All", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/api/tasks" } },
+        { "name": "Get My", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/api/tasks/me" } },
+        { "name": "Create", "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"title\": \"Deliver meds\",\n  \"description\": \"Deliver to Sector 4\",\n  \"disaster_id\": 1,\n  \"volunteer_id\": 1,\n  \"due_date\": \"2026-04-10\"\n}" }, "url": "{{baseUrl}}/api/tasks" } },
+        { "name": "Update Status", "request": { "method": "PUT", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "body": { "mode": "formdata", "formdata": [{ "key": "status", "value": "completed", "type": "text" }, { "key": "proof", "type": "file", "src": "" }] }, "url": "{{baseUrl}}/api/tasks/1/status" } },
+        { "name": "Delete", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/api/tasks/1" } }
+      ]
+    },
+    {
+      "name": "Certificates",
+      "item": [
+        { "name": "Get All", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/api/certificates" } },
+        { "name": "Get My", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/api/certificates/my" } },
+        { "name": "Create", "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "body": { "mode": "formdata", "formdata": [{ "key": "volunteer_id", "value": "1", "type": "text" }, { "key": "title", "value": "Flood Response Level-1", "type": "text" }, { "key": "issued_on", "value": "2026-04-07", "type": "text" }, { "key": "certificate", "type": "file", "src": "" }] }, "url": "{{baseUrl}}/api/certificates" } },
+        { "name": "Delete", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/api/certificates/1" } }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000" },
+    { "key": "token", "value": "" }
+  ]
+}
