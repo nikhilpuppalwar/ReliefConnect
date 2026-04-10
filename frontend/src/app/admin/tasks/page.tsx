@@ -166,6 +166,10 @@ function DeployMissionModal({ onClose, onSuccess }: { onClose: () => void; onSuc
   const [disasters, setDisasters]   = useState<Disaster[]>([]);
   const [volunteers, setVolunteers] = useState<Volunteer[]>([]);
   const [form, setForm] = useState({
+    title: "",
+    description: "",
+    disaster_id: "",
+    volunteer_id: "",
     due_date: "", status: "assigned" as Task["status"],
     priority: "medium" as Task["priority"],
   });
