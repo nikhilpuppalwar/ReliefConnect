@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo, useCallback, useRef } from "react";
+import AdminNavLinks from "@/components/AdminNavLinks";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { fetchApi } from "@/lib/api";
@@ -74,24 +75,17 @@ function AdminNav({ active }: { active: string }) {
           </div>
           <div>
             <span className="text-xl font-black text-[#E53E3E] font-['Space_Grotesk'] tracking-tighter uppercase block leading-none">ReliefConnect</span>
-            <span className="text-[9px] font-black text-on-surface-variant uppercase tracking-[0.15em]">Command Center</span>
+            <span className="text-xs font-black text-on-surface-variant uppercase tracking-[0.15em]">Command Center</span>
           </div>
         </div>
 
-        <nav className="hidden xl:flex items-center gap-1 flex-1 justify-center">
-          {links.map(link => (
-            <button key={link.label} onClick={() => router.push(link.href)}
-              className={`px-3 py-2 font-black text-[10px] tracking-[0.12em] uppercase transition-all rounded-lg hover:text-primary hover:bg-primary/5 ${active === link.href ? "text-primary border-b-2 border-primary" : "text-on-surface/60"}`}>
-              {link.label}
-            </button>
-          ))}
-        </nav>
+        <AdminNavLinks />
 
         <div className="flex items-center gap-3 shrink-0">
           <button onClick={() => router.push("/admin")}
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-white font-black text-[10px] uppercase tracking-widest rounded-xl shadow-[0_4px_16px_rgba(229,62,62,0.3)] hover:brightness-110 active:scale-95 transition-all">
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-white font-black text-sm uppercase tracking-widest rounded-xl shadow-[0_4px_16px_rgba(229,62,62,0.3)] hover:brightness-110 active:scale-95 transition-all">
             <span className="material-symbols-outlined text-sm">add_circle</span>
-            <span className="hidden sm:inline">New Dispatch</span>
+            <span className="hidden 2xl:inline">New Dispatch</span><span className="hidden lg:inline 2xl:hidden">Dispatch</span>
           </button>
           <div className="h-8 w-px bg-[#ffb3ad]/10" />
           <button className="relative text-on-surface-variant hover:text-primary transition-colors">
@@ -101,8 +95,8 @@ function AdminNav({ active }: { active: string }) {
           <div className="relative">
             <button onClick={() => setProfileOpen(!profileOpen)} className="flex items-center gap-2.5 hover:opacity-90 transition-opacity">
               <div className="text-right hidden sm:block">
-                <p className="text-[10px] font-black text-[#ffb3ad] leading-none">{user?.name?.toUpperCase() || "ADMIN"}</p>
-                <p className="text-[9px] text-on-surface-variant tracking-wider">Global Overseer</p>
+                <p className="text-sm font-black text-[#ffb3ad] leading-none">{user?.name?.toUpperCase() || "ADMIN"}</p>
+                <p className="text-xs text-on-surface-variant tracking-wider">Global Overseer</p>
               </div>
               <div className="w-9 h-9 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary font-black text-sm overflow-hidden">
                 {user?.avatar_url ? <img src={user.avatar_url} alt="" className="w-full h-full object-cover" /> : user?.name?.[0]?.toUpperCase() || "A"}
@@ -112,7 +106,7 @@ function AdminNav({ active }: { active: string }) {
               <div className="absolute top-12 right-0 w-60 bg-[#0e1420] border border-[#ffb3ad]/15 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.7)] overflow-hidden z-[200]" onClick={e => e.stopPropagation()}>
                 <div className="px-5 py-4 border-b border-[#ffb3ad]/10">
                   <p className="text-sm font-black text-white">{user?.name || "Admin"}</p>
-                  <p className="text-[10px] text-[#ffb3ad] font-bold uppercase tracking-widest">Global Overseer</p>
+                  <p className="text-sm text-[#ffb3ad] font-bold uppercase tracking-widest">Global Overseer</p>
                 </div>
                 <div className="px-2 py-2 space-y-1">
                   {[{ label: "Admin Profile", icon: "manage_accounts", href: "/admin/profile" }, { label: "Dashboard", icon: "dashboard", href: "/admin" }].map(item => (
@@ -150,7 +144,7 @@ function PdfPreviewModal({ cert, onClose }: { cert: Certificate; onClose: () => 
             <span className="material-symbols-outlined text-primary text-xl" style={{ fontVariationSettings: '"FILL" 1' }}>description</span>
             <div>
               <h3 className="text-sm font-black text-white uppercase tracking-tight">{cert.title}</h3>
-              <p className="text-[10px] text-on-surface-variant">{cert.volunteer_name || `Volunteer #${cert.volunteer_id}`} · Issued {formatDate(cert.issued_on)}</p>
+              <p className="text-sm text-on-surface-variant">{cert.volunteer_name || `Volunteer #${cert.volunteer_id}`} · Issued {formatDate(cert.issued_on)}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -192,12 +186,12 @@ function PdfPreviewModal({ cert, onClose }: { cert: Certificate; onClose: () => 
                 <h4 className="text-lg font-black text-primary uppercase">{cert.title}</h4>
                 <div className="flex justify-between items-end pt-6 border-t border-white/5">
                   <div className="text-left">
-                    <p className="font-mono text-[9px] text-on-surface-variant/50 mb-1">CERT-{String(cert.id).padStart(6, "0")}</p>
-                    <p className="text-[10px] font-bold text-white">Director Signature</p>
+                    <p className="font-mono text-xs text-on-surface-variant/50 mb-1">CERT-{String(cert.id).padStart(6, "0")}</p>
+                    <p className="text-sm font-bold text-white">Director Signature</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-[9px] text-on-surface-variant mb-1">ISSUED: {formatDate(cert.issued_on)}</p>
-                    <p className="text-[10px] font-bold text-white">Official Seal</p>
+                    <p className="text-xs text-on-surface-variant mb-1">ISSUED: {formatDate(cert.issued_on)}</p>
+                    <p className="text-sm font-bold text-white">Official Seal</p>
                   </div>
                 </div>
               </div>
@@ -314,7 +308,7 @@ function IssueCertPanel({ onSuccess }: { onSuccess: () => void }) {
         </div>
         <div>
           <h2 className="text-sm font-black text-white uppercase tracking-tight">Issue New Certificate</h2>
-          <p className="text-[10px] text-on-surface-variant">Assign and upload deployment credentials</p>
+          <p className="text-sm text-on-surface-variant">Assign and upload deployment credentials</p>
         </div>
       </div>
 
@@ -330,7 +324,7 @@ function IssueCertPanel({ onSuccess }: { onSuccess: () => void }) {
         <form onSubmit={handleSubmit} className="px-6 py-6 space-y-5">
           {/* Volunteer search */}
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Assign to Volunteer <span className="text-error">*</span></label>
+            <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Assign to Volunteer <span className="text-error">*</span></label>
             <div className="relative">
               <span className="material-symbols-outlined absolute left-3 top-3 text-on-surface-variant text-lg">person_search</span>
               <input value={volSearch} onChange={e => { setVolSearch(e.target.value); setShowDropdown(true); setSelectedVol(null); }}
@@ -347,7 +341,7 @@ function IssueCertPanel({ onSuccess }: { onSuccess: () => void }) {
                       </div>
                       <div>
                         <p className="text-sm font-bold text-white">{v.user.name}</p>
-                        <p className="text-[10px] text-on-surface-variant">{v.user.email}</p>
+                        <p className="text-sm text-on-surface-variant">{v.user.email}</p>
                       </div>
                     </button>
                   ))}
@@ -361,7 +355,7 @@ function IssueCertPanel({ onSuccess }: { onSuccess: () => void }) {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold text-white truncate">{selectedVol.user.name}</p>
-                  <p className="text-[10px] text-primary">VOL-{String(selectedVol.user_id).padStart(4, "0")} · Selected</p>
+                  <p className="text-sm text-primary">VOL-{String(selectedVol.user_id).padStart(4, "0")} · Selected</p>
                 </div>
                 <button type="button" onClick={() => { setSelectedVol(null); setVolSearch(""); }}
                   className="w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-white transition-colors flex-shrink-0">
@@ -373,7 +367,7 @@ function IssueCertPanel({ onSuccess }: { onSuccess: () => void }) {
 
           {/* Title */}
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Certificate Title <span className="text-error">*</span></label>
+            <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Certificate Title <span className="text-error">*</span></label>
             <select value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
               className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none focus:border-primary/40 appearance-none" disabled={submitting}>
               {CERT_TITLES.map(t => <option key={t} value={t}>{t}</option>)}
@@ -382,7 +376,7 @@ function IssueCertPanel({ onSuccess }: { onSuccess: () => void }) {
 
           {/* Issue Date */}
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Issue Date <span className="text-error">*</span></label>
+            <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Issue Date <span className="text-error">*</span></label>
             <div className="relative">
               <input type="date" value={form.issued_on} onChange={e => setForm(f => ({ ...f, issued_on: e.target.value }))}
                 className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none focus:border-primary/40 transition-colors" disabled={submitting} />
@@ -391,7 +385,7 @@ function IssueCertPanel({ onSuccess }: { onSuccess: () => void }) {
 
           {/* File Upload */}
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Upload PDF Document <span className="text-error">*</span></label>
+            <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Upload PDF Document <span className="text-error">*</span></label>
             <input ref={fileRef} type="file" accept="application/pdf" className="hidden"
               onChange={e => setFile(e.target.files?.[0] || null)} />
             <div
@@ -405,7 +399,7 @@ function IssueCertPanel({ onSuccess }: { onSuccess: () => void }) {
                   <span className="material-symbols-outlined text-green-400 text-2xl" style={{ fontVariationSettings: '"FILL" 1' }}>picture_as_pdf</span>
                   <div className="text-left">
                     <p className="text-sm font-bold text-green-400 truncate max-w-[200px]">{file.name}</p>
-                    <p className="text-[10px] text-on-surface-variant">{(file.size / 1024).toFixed(0)} KB · Click to change</p>
+                    <p className="text-sm text-on-surface-variant">{(file.size / 1024).toFixed(0)} KB · Click to change</p>
                   </div>
                   <button type="button" onClick={e => { e.stopPropagation(); setFile(null); }}
                     className="ml-2 w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-error transition-colors flex-shrink-0">
@@ -416,7 +410,7 @@ function IssueCertPanel({ onSuccess }: { onSuccess: () => void }) {
                 <>
                   <span className="material-symbols-outlined text-4xl text-on-surface-variant block mb-2">upload_file</span>
                   <p className="text-xs text-on-surface-variant">Drag & drop PDF or <span className="text-primary font-bold">browse files</span></p>
-                  <p className="text-[9px] text-on-surface-variant/50 mt-1 uppercase font-black tracking-widest">Max 10MB · PDF only</p>
+                  <p className="text-xs text-on-surface-variant/50 mt-1 uppercase font-black tracking-widest">Max 10MB · PDF only</p>
                 </>
               )}
             </div>
@@ -513,7 +507,7 @@ export default function AdminCertificatesPage() {
 
           {/* Header */}
           <div>
-            <p className="text-primary font-black uppercase tracking-widest text-[10px] mb-1">MISSION VERIFICATION & CREDENTIALING MODULE</p>
+            <p className="text-primary font-black uppercase tracking-widest text-sm mb-1">MISSION VERIFICATION & CREDENTIALING MODULE</p>
             <h1 className="text-4xl font-black tracking-tight uppercase font-['Space_Grotesk'] text-white">Certificate Issuance</h1>
             <p className="text-on-surface-variant text-sm mt-1">Issue, manage, and track volunteer deployment credentials.</p>
           </div>
@@ -528,8 +522,8 @@ export default function AdminCertificatesPage() {
             ].map(s => (
               <div key={s.label} className="bg-surface-container-low p-5 rounded-xl border-l-4 relative overflow-hidden" style={{ borderLeftColor: s.color }}>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant">{s.label}</span>
-                  <span className="text-[9px] font-black px-2 py-0.5 rounded" style={{ color: s.color, background: `${s.color}18` }}>{s.badge}</span>
+                  <span className="text-xs font-black uppercase tracking-widest text-on-surface-variant">{s.label}</span>
+                  <span className="text-xs font-black px-2 py-0.5 rounded" style={{ color: s.color, background: `${s.color}18` }}>{s.badge}</span>
                 </div>
                 <span className="text-3xl font-black text-white font-['Space_Grotesk']">{loading ? "—" : s.value}</span>
                 <div className="absolute -bottom-2 -right-2 opacity-5">
@@ -566,7 +560,7 @@ export default function AdminCertificatesPage() {
                       </button>
                       {showFilters && (
                         <div className="absolute top-full right-0 mt-1 z-20 bg-[#0e1420] border border-outline-variant/20 rounded-xl shadow-2xl overflow-hidden w-56" onClick={e => e.stopPropagation()}>
-                          <p className="px-4 py-2 text-[9px] font-black uppercase tracking-widest text-on-surface-variant border-b border-outline-variant/10">Sort By</p>
+                          <p className="px-4 py-2 text-xs font-black uppercase tracking-widest text-on-surface-variant border-b border-outline-variant/10">Sort By</p>
                           {([["newest", "Newest First"], ["oldest", "Oldest First"], ["name_asc", "Name A→Z"], ["name_desc", "Name Z→A"]] as [SortOption, string][]).map(([val, label]) => (
                             <button key={val} onClick={() => { setSortFilter(val); setShowFilters(false); }}
                               className={`w-full flex items-center justify-between px-4 py-3 text-sm hover:bg-surface-container transition-colors ${sortFilter === val ? "text-primary font-bold" : "text-on-surface-variant"}`}>
@@ -586,7 +580,7 @@ export default function AdminCertificatesPage() {
                     <thead>
                       <tr className="bg-surface-container border-b border-outline-variant/10">
                         {["Volunteer", "Certificate Title", "Issue Date", "Issued By", "File", "Action"].map((h, i) => (
-                          <th key={h} className={`px-5 py-4 text-[9px] font-black uppercase tracking-widest text-on-surface-variant ${i >= 4 ? "text-center" : ""}`}>{h}</th>
+                          <th key={h} className={`px-5 py-4 text-xs font-black uppercase tracking-widest text-on-surface-variant ${i >= 4 ? "text-center" : ""}`}>{h}</th>
                         ))}
                       </tr>
                     </thead>
@@ -617,14 +611,14 @@ export default function AdminCertificatesPage() {
                                 </div>
                                 <div>
                                   <p className="text-sm font-bold text-white">{cert.volunteer_name || `Volunteer #${cert.volunteer_id}`}</p>
-                                  <p className="text-[10px] text-on-surface-variant font-mono">VOL-{String(cert.volunteer_id).padStart(4, "0")}</p>
+                                  <p className="text-sm text-on-surface-variant font-mono">VOL-{String(cert.volunteer_id).padStart(4, "0")}</p>
                                 </div>
                               </div>
                             </td>
                             {/* Title */}
                             <td className="px-5 py-4">
                               <p className="text-sm font-bold text-white">{cert.title}</p>
-                              <p className="text-[9px] font-black text-primary/70 uppercase tracking-widest mt-0.5">CERT-{String(cert.id).padStart(6, "0")}</p>
+                              <p className="text-xs font-black text-primary/70 uppercase tracking-widest mt-0.5">CERT-{String(cert.id).padStart(6, "0")}</p>
                             </td>
                             {/* Issue Date */}
                             <td className="px-5 py-4 text-xs text-on-surface-variant whitespace-nowrap">{formatDate(cert.issued_on)}</td>
@@ -656,10 +650,10 @@ export default function AdminCertificatesPage() {
                 {/* Footer */}
                 {!loading && filtered.length > 0 && (
                   <div className="px-6 py-4 border-t border-outline-variant/10 bg-surface-container/20 flex items-center justify-between">
-                    <p className="text-[10px] text-on-surface-variant font-black uppercase tracking-widest">
+                    <p className="text-sm text-on-surface-variant font-black uppercase tracking-widest">
                       {filtered.length} certificate{filtered.length !== 1 ? "s" : ""} {search ? "matched" : "total"}
                     </p>
-                    <div className="flex items-center gap-1.5 text-emerald-400 text-[10px] font-black uppercase tracking-widest">
+                    <div className="flex items-center gap-1.5 text-emerald-400 text-sm font-black uppercase tracking-widest">
                       <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
                       DB Synced
                     </div>

@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { fetchApi } from "@/lib/api";
+import { useRef } from "react";
 
 export default function AdminProfilePage() {
-  const { user, logout } = useAuth();
+  const { user, token, login, logout } = useAuth();
   const router = useRouter();
 
   const [form, setForm] = useState({
@@ -16,8 +17,10 @@ export default function AdminProfilePage() {
     location: "",
   });
   const [saving, setSaving] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (user) {
@@ -34,18 +37,51 @@ export default function AdminProfilePage() {
     e.preventDefault();
     setSaving(true);
     setError("");
-    setSuccess(false);
+    setSuccess("");
     try {
-      await fetchApi(`/users/${user?.id}`, {
+      const res = await fetchApi(`/users/${user?.id}`, {
         method: "PUT",
         body: JSON.stringify({ name: form.name, phone: form.phone, location: form.location }),
       });
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 3000);
+      if (res.success && token && user) {
+        // Update context so the UI reflects changes immediately
+        login(token, { ...user, name: res.data.name, phone: res.data.phone, location: res.data.location });
+      }
+      setSuccess("Profile updated successfully!");
+      setTimeout(() => setSuccess(""), 3000);
     } catch (err: any) {
       setError(err?.message || "Failed to update profile");
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleAvatarUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    
+    setUploading(true);
+    setError("");
+    setSuccess("");
+    try {
+      const formData = new FormData();
+      formData.append("avatar", file);
+
+      const res = await fetchApi(`/users/${user.id}/avatar`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (res.success && token) {
+        login(token, { ...user, avatar_url: res.data.avatar_url });
+        setSuccess("Profile picture updated!");
+        setTimeout(() => setSuccess(""), 3000);
+      }
+    } catch (err: any) {
+      setError(err?.message || "Failed to upload image");
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
   }
 
@@ -81,13 +117,30 @@ export default function AdminProfilePage() {
           {/* Profile Card */}
           <div className="md:col-span-1">
             <div className="bg-surface-container-low border border-outline-variant/10 rounded-2xl p-6 text-center">
-              <div className="w-24 h-24 rounded-2xl bg-primary/20 border-2 border-primary/30 flex items-center justify-center mx-auto mb-4 text-3xl font-black text-primary shadow-[0_0_30px_rgba(229,62,62,0.2)]">
-                {user?.name?.[0]?.toUpperCase() || "A"}
+              
+              <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleAvatarUpload} />
+              
+              <div 
+                onClick={() => fileInputRef.current?.click()}
+                className="group relative w-24 h-24 rounded-2xl bg-primary/20 border-2 border-primary/30 flex items-center justify-center mx-auto mb-4 text-3xl font-black text-primary shadow-[0_0_30px_rgba(229,62,62,0.2)] cursor-pointer overflow-hidden transition-all hover:scale-105"
+              >
+                {uploading ? (
+                  <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                ) : user?.avatar_url ? (
+                  <img src={user.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                ) : (
+                  user?.name?.[0]?.toUpperCase() || "A"
+                )}
+                
+                {/* Hover overlay hint */}
+                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <span className="material-symbols-outlined text-white">photo_camera</span>
+                </div>
               </div>
               <p className="text-lg font-black text-white">{user?.name || "Admin"}</p>
               <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
                 <span className="material-symbols-outlined text-primary text-sm">shield</span>
-                <span className="text-[10px] font-black text-primary uppercase tracking-widest">Global Overseer</span>
+                <span className="text-sm font-black text-primary uppercase tracking-widest">Global Overseer</span>
               </div>
               <p className="text-xs text-on-surface-variant mt-3">{user?.email}</p>
 
@@ -113,7 +166,7 @@ export default function AdminProfilePage() {
               <form onSubmit={handleSave} className="space-y-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Full Name</label>
+                    <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Full Name</label>
                     <input
                       type="text"
                       value={form.name}
@@ -122,7 +175,7 @@ export default function AdminProfilePage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Email</label>
+                    <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Email</label>
                     <input
                       type="email"
                       value={form.email}
@@ -134,7 +187,7 @@ export default function AdminProfilePage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Phone</label>
+                    <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Phone</label>
                     <input
                       type="tel"
                       value={form.phone}
@@ -144,7 +197,7 @@ export default function AdminProfilePage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Location / Base</label>
+                    <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Location / Base</label>
                     <input
                       type="text"
                       value={form.location}
@@ -165,7 +218,7 @@ export default function AdminProfilePage() {
                 {success && (
                   <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-green-500/10 border border-green-500/25">
                     <span className="material-symbols-outlined text-sm text-green-400">check_circle</span>
-                    <p className="text-sm text-green-400 font-bold">Profile updated successfully!</p>
+                    <p className="text-sm text-green-400 font-bold">{success}</p>
                   </div>
                 )}
 

@@ -21,7 +21,7 @@ export default function Page() {
       {/* Navbar */}
       <nav className="fixed top-0 w-full z-50 bg-[#0d131f]/70 backdrop-blur-xl shadow-[0_0_20px_rgba(229,62,62,0.05)] h-20 transition-all duration-300">
         <div className="flex justify-between items-center max-w-7xl mx-auto px-8 h-full">
-          <div className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary-container flex items-center justify-center rounded-lg rotate-45">
               <span
                 className="material-symbols-outlined text-on-primary-container -rotate-45"
@@ -31,12 +31,12 @@ export default function Page() {
               </span>
             </div>
             <span className="text-2xl font-bold tracking-tighter text-[#dde2f3] font-headline uppercase">ReliefConnect</span>
-          </div>
+          </Link>
           <div className="hidden md:flex items-center gap-8 font-headline uppercase tracking-wider text-sm">
-            <a className="text-[#ffb3ad] border-b-2 border-[#ff5450] pb-1" href="#">Home</a>
-            <a className="text-[#dde2f3] hover:text-[#ffb3ad] transition-colors" href="#how-it-works">About</a>
-            <a className="text-[#dde2f3] hover:text-[#ffb3ad] transition-colors" href="#how-it-works">How It Works</a>
-            <a className="text-[#dde2f3] hover:text-[#ffb3ad] transition-colors" href="#contact">Contact</a>
+            <Link className="text-[#ffb3ad] border-b-2 border-[#ff5450] pb-1" href="#home">Home</Link>
+            <Link className="text-[#dde2f3] hover:text-[#ffb3ad] transition-colors" href="#about">About</Link>
+            <Link className="text-[#dde2f3] hover:text-[#ffb3ad] transition-colors" href="#how-it-works">How It Works</Link>
+            <Link className="text-[#dde2f3] hover:text-[#ffb3ad] transition-colors" href="#contact">Contact</Link>
           </div>
           <div className="flex items-center gap-4">
             <Link
@@ -58,7 +58,7 @@ export default function Page() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center pt-20 overflow-hidden hero-gradient">
+      <section id="home" className="relative min-h-screen flex items-center pt-20 overflow-hidden hero-gradient">
         <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="z-10">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-error-container/30 border border-error/20 mb-6">
@@ -97,7 +97,7 @@ export default function Page() {
               <img
                 alt="Emergency response center with large digital maps and professional personnel coordinating disaster relief"
                 className="w-full h-[500px] object-cover grayscale-[0.3] contrast-[1.1]"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8NGCFtHu8eInWN9GGEgB9CmVQQ6OwsweVcBOXKAyOPRmmhgzXkV81_WXDskWUULHntl1yh6TMww0asWwWyllhvhXF_UjYLEO8j-wDba-wZn7xcjSHDio98Yo-380OXM1AC1Aa1yBkZReoexYhaN5hRr7lblqcJtABSyAnqw_JO9fcTTeBBIzvtWA9HhgbYI1bdPyVWXjRCXVbN__YPmLdqvIUA57foiUQs-gzhknrj_swWL3ExgCnzqY5MYRMAj2rD1-OyJrKAg"
+                src="/langing_img.png"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
             </div>
@@ -168,7 +168,7 @@ export default function Page() {
       </section>
 
       {/* Who Is It For */}
-      <section className="py-24 bg-surface-container-low">
+      <section id="about" className="py-24 bg-surface-container-low">
         <div className="max-w-7xl mx-auto px-8">
           <h2 className="text-4xl md:text-5xl font-bold mb-16 text-center font-headline uppercase">
             Who Can Use This <span className="text-primary-container">Platform?</span>

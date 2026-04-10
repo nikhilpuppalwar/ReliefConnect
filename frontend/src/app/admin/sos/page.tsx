@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo, useCallback } from "react";
+import AdminNavLinks from "@/components/AdminNavLinks";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { fetchApi } from "@/lib/api";
@@ -76,24 +77,17 @@ function AdminNav({ active }: { active: string }) {
           </div>
           <div>
             <span className="text-xl font-black text-[#E53E3E] font-['Space_Grotesk'] tracking-tighter uppercase block leading-none">ReliefConnect</span>
-            <span className="text-[9px] font-black text-on-surface-variant uppercase tracking-[0.15em]">Command Center</span>
+            <span className="text-xs font-black text-on-surface-variant uppercase tracking-[0.15em]">Command Center</span>
           </div>
         </div>
 
-        <nav className="hidden xl:flex items-center gap-1 flex-1 justify-center">
-          {links.map(link => (
-            <button key={link.label} onClick={() => router.push(link.href)}
-              className={`px-3 py-2 font-black text-[10px] tracking-[0.12em] uppercase transition-all rounded-lg hover:text-primary hover:bg-primary/5 ${active === link.href ? "text-primary border-b-2 border-primary" : "text-on-surface/60"}`}>
-              {link.label}
-            </button>
-          ))}
-        </nav>
+        <AdminNavLinks />
 
         <div className="flex items-center gap-3 shrink-0">
           <button onClick={() => router.push("/admin")}
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-white font-black text-[10px] uppercase tracking-widest rounded-xl shadow-[0_4px_16px_rgba(229,62,62,0.3)] hover:brightness-110 active:scale-95 transition-all">
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-white font-black text-sm uppercase tracking-widest rounded-xl shadow-[0_4px_16px_rgba(229,62,62,0.3)] hover:brightness-110 active:scale-95 transition-all">
             <span className="material-symbols-outlined text-sm">add_circle</span>
-            <span className="hidden sm:inline">New Dispatch</span>
+            <span className="hidden 2xl:inline">New Dispatch</span><span className="hidden lg:inline 2xl:hidden">Dispatch</span>
           </button>
           <div className="h-8 w-px bg-[#ffb3ad]/10" />
           <button className="relative text-on-surface-variant hover:text-primary transition-colors">
@@ -104,8 +98,8 @@ function AdminNav({ active }: { active: string }) {
           <div className="relative">
             <button onClick={() => setProfileOpen(!profileOpen)} className="flex items-center gap-2.5 hover:opacity-90 transition-opacity">
               <div className="text-right hidden sm:block">
-                <p className="text-[10px] font-black text-[#ffb3ad] leading-none">{user?.name?.toUpperCase() || "ADMIN"}</p>
-                <p className="text-[9px] text-on-surface-variant tracking-wider">Global Overseer</p>
+                <p className="text-sm font-black text-[#ffb3ad] leading-none">{user?.name?.toUpperCase() || "ADMIN"}</p>
+                <p className="text-xs text-on-surface-variant tracking-wider">Global Overseer</p>
               </div>
               <div className="w-9 h-9 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary font-black text-sm overflow-hidden">
                 {user?.avatar_url ? <img src={user.avatar_url} alt="" className="w-full h-full object-cover" /> : user?.name?.[0]?.toUpperCase() || "A"}
@@ -116,7 +110,7 @@ function AdminNav({ active }: { active: string }) {
               <div className="absolute top-12 right-0 w-60 bg-[#0e1420] border border-[#ffb3ad]/15 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.7)] overflow-hidden z-[200]" onClick={e => e.stopPropagation()}>
                 <div className="px-5 py-4 border-b border-[#ffb3ad]/10">
                   <p className="text-sm font-black text-white">{user?.name || "Admin"}</p>
-                  <p className="text-[10px] text-[#ffb3ad] font-bold uppercase tracking-widest">Global Overseer</p>
+                  <p className="text-sm text-[#ffb3ad] font-bold uppercase tracking-widest">Global Overseer</p>
                 </div>
                 <div className="px-2 py-2 space-y-1">
                   {[{ label: "Admin Profile", icon: "manage_accounts", href: "/admin/profile" }, { label: "Dashboard", icon: "dashboard", href: "/admin" }].map(item => (
@@ -176,7 +170,7 @@ function NewRequestModal({ onClose, onSuccess }: { onClose: () => void; onSucces
             </div>
             <div>
               <h2 className="text-sm font-black text-white uppercase tracking-tight">New SOS Request</h2>
-              <p className="text-[10px] text-on-surface-variant">Log a new civilian distress request</p>
+              <p className="text-sm text-on-surface-variant">Log a new civilian distress request</p>
             </div>
           </div>
           <button onClick={onClose} disabled={submitting} className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-white transition-colors">
@@ -194,26 +188,26 @@ function NewRequestModal({ onClose, onSuccess }: { onClose: () => void; onSucces
         ) : (
           <form onSubmit={handleSubmit} className="px-8 py-6 space-y-4">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Title <span className="text-error">*</span></label>
+              <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Title <span className="text-error">*</span></label>
               <input required value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
                 placeholder="E.g. Medical Emergency — Flood Zone B"
                 className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 transition-colors" disabled={submitting} />
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Description</label>
+              <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Description</label>
               <textarea rows={2} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
                 placeholder="Describe the situation, number of people, immediate needs..."
                 className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 resize-none transition-colors" disabled={submitting} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Location</label>
+                <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Location</label>
                 <input value={form.location} onChange={e => setForm(f => ({ ...f, location: e.target.value }))}
                   placeholder="Block / Sector / Area"
                   className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 transition-colors" disabled={submitting} />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Priority</label>
+                <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Priority</label>
                 <select value={form.priority} onChange={e => setForm(f => ({ ...f, priority: e.target.value as Request["priority"] }))}
                   className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none appearance-none" disabled={submitting}>
                   <option value="critical">Critical</option>
@@ -261,28 +255,28 @@ function ViewDrawer({ request, onClose }: { request: Request; onClose: () => voi
 
         <div className="p-6 space-y-6">
           <div className="flex flex-wrap gap-2">
-            <span className={`px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${pc.bg} ${pc.text} ${pc.border}`}>{pc.label} Priority</span>
-            <span className="px-3 py-1.5 rounded-full text-[10px] font-black uppercase border border-white/10 flex items-center gap-1.5">
+            <span className={`px-3 py-1.5 rounded-full text-sm font-black uppercase tracking-widest border ${pc.bg} ${pc.text} ${pc.border}`}>{pc.label} Priority</span>
+            <span className="px-3 py-1.5 rounded-full text-sm font-black uppercase border border-white/10 flex items-center gap-1.5">
               <span className={`w-1.5 h-1.5 rounded-full ${sc.dot}`} /><span className={sc.text}>{sc.label}</span>
             </span>
           </div>
 
           <div>
-            <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-1">Request ID</p>
-            <p className="text-[10px] font-mono text-primary mb-2">#RQ-{String(request.id).padStart(4, "0")}</p>
+            <p className="text-sm font-black uppercase tracking-widest text-on-surface-variant mb-1">Request ID</p>
+            <p className="text-sm font-mono text-primary mb-2">#RQ-{String(request.id).padStart(4, "0")}</p>
             <h3 className="text-lg font-black text-white leading-tight">{request.title}</h3>
           </div>
 
           {request.description && (
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-2">Description</p>
+              <p className="text-sm font-black uppercase tracking-widest text-on-surface-variant mb-2">Description</p>
               <p className="text-sm text-on-surface-variant leading-relaxed">{request.description}</p>
             </div>
           )}
 
           {request.photo_url && (
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-2">Attached Photo</p>
+              <p className="text-sm font-black uppercase tracking-widest text-on-surface-variant mb-2">Attached Photo</p>
               <img src={request.photo_url} alt="Request photo" className="w-full rounded-xl object-cover max-h-48" />
             </div>
           )}
@@ -295,7 +289,7 @@ function ViewDrawer({ request, onClose }: { request: Request; onClose: () => voi
               { label: "Reported",     value: new Date(request.created_at).toLocaleString() },
             ].map(item => (
               <div key={item.label} className="px-4 py-3 flex justify-between items-center bg-surface-container-low">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">{item.label}</span>
+                <span className="text-sm font-bold uppercase tracking-widest text-on-surface-variant">{item.label}</span>
                 <span className="text-xs font-bold text-white max-w-[60%] text-right">{item.value}</span>
               </div>
             ))}
@@ -347,7 +341,7 @@ function AssignModal({ request, onClose, onSuccess }: { request: Request; onClos
         <div className="px-8 py-5 border-b border-outline-variant/10 flex items-center justify-between" style={{ background: "linear-gradient(135deg, rgba(229,62,62,0.08), #0e1420)" }}>
           <div>
             <h2 className="text-sm font-black text-white uppercase tracking-tight">Assign Request</h2>
-            <p className="text-[10px] text-on-surface-variant">#RQ-{String(request.id).padStart(4, "0")} · {request.title}</p>
+            <p className="text-sm text-on-surface-variant">#RQ-{String(request.id).padStart(4, "0")} · {request.title}</p>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-white transition-colors">
             <span className="material-symbols-outlined text-sm">close</span>
@@ -364,7 +358,7 @@ function AssignModal({ request, onClose, onSuccess }: { request: Request; onClos
         ) : (
           <form onSubmit={handleAssign} className="px-8 py-6 space-y-4">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Select Available Volunteer</label>
+              <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Select Available Volunteer</label>
               {volunteers.length === 0 ? (
                 <p className="text-xs text-on-surface-variant italic py-2">No available volunteers at this time.</p>
               ) : (
@@ -538,7 +532,7 @@ export default function AdminSosPage() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
-              <p className="text-primary font-black uppercase tracking-widest text-[10px] mb-1">EMERGENCY DISPATCH CENTER</p>
+              <p className="text-primary font-black uppercase tracking-widest text-sm mb-1">EMERGENCY DISPATCH CENTER</p>
               <h1 className="text-4xl font-black tracking-tight uppercase font-['Space_Grotesk'] text-white">SOS Request Center</h1>
               <p className="text-on-surface-variant text-sm mt-1 max-w-xl">Real-time civilian distress signal monitoring and resource allocation dispatching system.</p>
             </div>
@@ -562,8 +556,8 @@ export default function AdminSosPage() {
                 style={{ borderLeftColor: s.color }}
                 onClick={() => switchTab(s.label === "Total Requests" ? "all" : s.label.toLowerCase().replace(" ", "_") as any)}>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant">{s.label}</span>
-                  <span className="text-[9px] font-black px-2 py-0.5 rounded" style={{ color: s.color, background: `${s.color}18` }}>{s.badge}</span>
+                  <span className="text-xs font-black uppercase tracking-widest text-on-surface-variant">{s.label}</span>
+                  <span className="text-xs font-black px-2 py-0.5 rounded" style={{ color: s.color, background: `${s.color}18` }}>{s.badge}</span>
                 </div>
                 <span className="text-3xl font-black text-white font-['Space_Grotesk']">{loading ? "—" : s.value.toLocaleString()}</span>
                 <div className="absolute -bottom-2 -right-2 opacity-5">
@@ -580,11 +574,11 @@ export default function AdminSosPage() {
             <div className="flex border-b border-outline-variant/15 px-6 pt-1 overflow-x-auto">
               {STATUS_TABS.map(tab => (
                 <button key={tab} onClick={() => switchTab(tab)}
-                  className={`px-5 py-4 text-[10px] font-black tracking-widest uppercase whitespace-nowrap border-b-2 transition-all flex items-center gap-2 ${
+                  className={`px-5 py-4 text-sm font-black tracking-widest uppercase whitespace-nowrap border-b-2 transition-all flex items-center gap-2 ${
                     activeTab === tab ? "border-primary text-primary" : "border-transparent text-on-surface-variant hover:text-on-surface"}`}>
                   {TAB_LABELS[tab]}
                   {counts[tab] > 0 && (
-                    <span className={`px-2 py-0.5 rounded-full text-[9px] font-black ${activeTab === tab ? "bg-primary/20 text-primary" : "bg-surface-container text-on-surface-variant"}`}>
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-black ${activeTab === tab ? "bg-primary/20 text-primary" : "bg-surface-container text-on-surface-variant"}`}>
                       {counts[tab]}
                     </span>
                   )}
@@ -642,7 +636,7 @@ export default function AdminSosPage() {
                 <thead>
                   <tr className="bg-surface-container border-b border-outline-variant/10">
                     {["Request ID", "Civilian", "Location", "Priority", "Status", "Assigned To", "Time", "Actions"].map((h, i) => (
-                      <th key={h} className={`px-5 py-4 text-[9px] font-black uppercase tracking-widest text-on-surface-variant ${i === 7 ? "text-right" : ""}`}>{h}</th>
+                      <th key={h} className={`px-5 py-4 text-xs font-black uppercase tracking-widest text-on-surface-variant ${i === 7 ? "text-right" : ""}`}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -680,7 +674,7 @@ export default function AdminSosPage() {
                               </div>
                               <div>
                                 <p className="text-sm font-bold text-white">{r.requested_by?.name || "Unknown"}</p>
-                                <p className="text-[10px] text-on-surface-variant truncate max-w-[120px]">{r.title}</p>
+                                <p className="text-sm text-on-surface-variant truncate max-w-[120px]">{r.title}</p>
                               </div>
                             </div>
                           </td>
@@ -690,10 +684,10 @@ export default function AdminSosPage() {
                                 <span className="material-symbols-outlined text-xs">location_on</span>
                                 <span className="max-w-[140px] truncate">{r.location}</span>
                               </div>
-                            ) : <span className="text-[10px] text-on-surface-variant/40">—</span>}
+                            ) : <span className="text-sm text-on-surface-variant/40">—</span>}
                           </td>
                           <td className="px-5 py-4">
-                            <span className={`text-[10px] font-black px-2.5 py-1 rounded-full border ${pc.bg} ${pc.text} ${pc.border}`}>{pc.label}</span>
+                            <span className={`text-sm font-black px-2.5 py-1 rounded-full border ${pc.bg} ${pc.text} ${pc.border}`}>{pc.label}</span>
                           </td>
                           <td className="px-5 py-4">
                             <div className="flex items-center gap-1.5">
@@ -731,7 +725,7 @@ export default function AdminSosPage() {
 
             {/* Pagination */}
             <div className="px-6 py-4 bg-surface-container/30 border-t border-outline-variant/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
+              <span className="text-sm font-bold text-on-surface-variant uppercase tracking-widest">
                 Showing {filtered.length === 0 ? 0 : (page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length} entries
               </span>
               <div className="flex gap-1.5 items-center">

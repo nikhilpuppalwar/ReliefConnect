@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import AdminNavLinks from "@/components/AdminNavLinks";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { fetchApi } from "@/lib/api";
@@ -40,18 +41,11 @@ function AdminNav() {
           </div>
           <div>
             <span className="text-xl font-black text-[#E53E3E] font-['Space_Grotesk'] tracking-tighter uppercase block leading-none">ReliefConnect</span>
-            <span className="text-[9px] font-black text-on-surface-variant uppercase tracking-[0.15em]">Command Center</span>
+            <span className="text-xs font-black text-on-surface-variant uppercase tracking-[0.15em]">Command Center</span>
           </div>
         </div>
 
-        <nav className="hidden xl:flex items-center gap-1 flex-1 justify-center">
-          {links.map(link => (
-            <button key={link.label} onClick={() => router.push(link.href)}
-              className="px-3 py-2 font-black text-[10px] tracking-[0.12em] uppercase transition-all rounded-lg text-on-surface/60 hover:text-primary hover:bg-primary/5">
-              {link.label}
-            </button>
-          ))}
-        </nav>
+        <AdminNavLinks />
 
         <div className="flex items-center gap-3 shrink-0">
           <div className="h-8 w-px bg-[#ffb3ad]/10" />
@@ -62,8 +56,8 @@ function AdminNav() {
           <div className="relative">
             <button onClick={() => setProfileOpen(!profileOpen)} className="flex items-center gap-2.5 hover:opacity-90 transition-opacity">
               <div className="text-right hidden sm:block">
-                <p className="text-[10px] font-black text-[#ffb3ad] leading-none">{user?.name?.toUpperCase() || "ADMIN"}</p>
-                <p className="text-[9px] text-on-surface-variant tracking-wider">Global Overseer</p>
+                <p className="text-sm font-black text-[#ffb3ad] leading-none">{user?.name?.toUpperCase() || "ADMIN"}</p>
+                <p className="text-xs text-on-surface-variant tracking-wider">Global Overseer</p>
               </div>
               <div className="w-9 h-9 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary font-black text-sm overflow-hidden">
                 {user?.avatar_url ? <img src={user.avatar_url} alt="" className="w-full h-full object-cover" /> : user?.name?.[0]?.toUpperCase() || "A"}
@@ -73,7 +67,7 @@ function AdminNav() {
               <div className="absolute top-12 right-0 w-60 bg-[#0e1420] border border-[#ffb3ad]/15 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.7)] overflow-hidden z-[200]" onClick={e => e.stopPropagation()}>
                 <div className="px-5 py-4 border-b border-[#ffb3ad]/10">
                   <p className="text-sm font-black text-white">{user?.name || "Admin"}</p>
-                  <p className="text-[10px] text-[#ffb3ad] font-bold uppercase tracking-widest">Global Overseer</p>
+                  <p className="text-sm text-[#ffb3ad] font-bold uppercase tracking-widest">Global Overseer</p>
                 </div>
                 <div className="px-2 py-2 space-y-1">
                   {[{ label: "Admin Profile", icon: "manage_accounts", href: "/admin/profile" }, { label: "Dashboard", icon: "dashboard", href: "/admin" }].map(item => (
@@ -205,7 +199,7 @@ export default function DeployMissionPage() {
               <span className="material-symbols-outlined text-5xl text-green-400" style={{ fontVariationSettings: '"FILL" 1' }}>rocket_launch</span>
             </div>
             <div>
-              <p className="text-green-400 font-black text-[10px] uppercase tracking-widest mb-2">Mission Deployed!</p>
+              <p className="text-green-400 font-black text-sm uppercase tracking-widest mb-2">Mission Deployed!</p>
               <h2 className="text-3xl font-black text-white uppercase tracking-tight">{form.title}</h2>
               {selectedVolunteer && (
                 <p className="text-on-surface-variant text-sm mt-2">
@@ -253,7 +247,7 @@ export default function DeployMissionPage() {
                 <span className="material-symbols-outlined text-primary text-2xl" style={{ fontVariationSettings: '"FILL" 1' }}>rocket_launch</span>
               </div>
               <div>
-                <p className="text-primary font-black text-[10px] uppercase tracking-widest mb-0.5">Mission Control</p>
+                <p className="text-primary font-black text-sm uppercase tracking-widest mb-0.5">Mission Control</p>
                 <h1 className="text-3xl font-black text-white uppercase tracking-tight font-['Space_Grotesk']">Deploy New Mission</h1>
                 <p className="text-on-surface-variant text-sm mt-0.5">Initialize a tactical task and assign to a field operative</p>
               </div>
@@ -277,7 +271,7 @@ export default function DeployMissionPage() {
                 <div className="p-6 space-y-5">
                   {/* Title */}
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant flex items-center gap-1">
+                    <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant flex items-center gap-1">
                       Mission Title <span className="text-error">*</span>
                     </label>
                     <input required value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
@@ -288,7 +282,7 @@ export default function DeployMissionPage() {
 
                   {/* Description */}
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Mission Description</label>
+                    <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Mission Description</label>
                     <textarea rows={3} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
                       placeholder="Provide detailed operational objectives, target location, resources needed, hazard notes..."
                       className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 resize-none transition-colors"
@@ -297,7 +291,7 @@ export default function DeployMissionPage() {
 
                   {/* Priority selector */}
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Priority Level</label>
+                    <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Priority Level</label>
                     <div className="grid grid-cols-4 gap-2">
                       {(Object.entries(PRIORITY_CFG) as [typeof form.priority, typeof PRIORITY_CFG[keyof typeof PRIORITY_CFG]][]).map(([key, cfg]) => (
                         <button key={key} type="button" onClick={() => setForm(f => ({ ...f, priority: key }))}
@@ -321,9 +315,9 @@ export default function DeployMissionPage() {
                 <div className="p-6 space-y-5">
                   {/* Disaster Zone */}
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant flex items-center gap-1">
+                    <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant flex items-center gap-1">
                       Disaster Zone <span className="text-error">*</span>
-                      <span className="ml-auto text-[9px] text-on-surface-variant/50">{disasters.length} active zones</span>
+                      <span className="ml-auto text-xs text-on-surface-variant/50">{disasters.length} active zones</span>
                     </label>
                     {disasters.length === 0 ? (
                       <div className="px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center gap-2">
@@ -349,9 +343,9 @@ export default function DeployMissionPage() {
 
                   {/* Volunteer */}
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant flex items-center gap-1">
+                    <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant flex items-center gap-1">
                       Assign Volunteer <span className="text-error">*</span>
-                      <span className="ml-auto text-[9px] text-on-surface-variant/50">{availableVolunteers.length} available</span>
+                      <span className="ml-auto text-xs text-on-surface-variant/50">{availableVolunteers.length} available</span>
                     </label>
                     <select required value={form.volunteer_id} onChange={e => setForm(f => ({ ...f, volunteer_id: e.target.value }))}
                       className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none focus:border-primary/40 appearance-none"
@@ -372,10 +366,10 @@ export default function DeployMissionPage() {
                         </div>
                         <div>
                           <p className="text-sm font-bold text-white">{selectedVolunteer.user.name}</p>
-                          <p className="text-[10px] text-on-surface-variant">VOL-{String(selectedVolunteer.user_id).padStart(4, "0")} · {selectedVolunteer.user.email}</p>
+                          <p className="text-sm text-on-surface-variant">VOL-{String(selectedVolunteer.user_id).padStart(4, "0")} · {selectedVolunteer.user.email}</p>
                         </div>
                         <div className="ml-auto">
-                          <span className={`text-[9px] font-black px-2 py-1 rounded-full uppercase tracking-widest ${(selectedVolunteer.availability_status || selectedVolunteer.availability || "").toLowerCase() === "available" ? "bg-green-500/15 text-green-400" : "bg-orange-500/15 text-orange-400"}`}>
+                          <span className={`text-xs font-black px-2 py-1 rounded-full uppercase tracking-widest ${(selectedVolunteer.availability_status || selectedVolunteer.availability || "").toLowerCase() === "available" ? "bg-green-500/15 text-green-400" : "bg-orange-500/15 text-orange-400"}`}>
                             {(selectedVolunteer.availability_status || selectedVolunteer.availability || "Unknown").toUpperCase()}
                           </span>
                         </div>
@@ -394,13 +388,13 @@ export default function DeployMissionPage() {
                 </div>
                 <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Due Date & Time</label>
+                    <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Due Date & Time</label>
                     <input type="datetime-local" value={form.due_date} onChange={e => setForm(f => ({ ...f, due_date: e.target.value }))}
                       className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none focus:border-primary/40 transition-colors [color-scheme:dark]"
                       disabled={submitting} />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Initial Status</label>
+                    <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Initial Status</label>
                     <select value={form.status} onChange={e => setForm(f => ({ ...f, status: e.target.value as typeof form.status }))}
                       className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none appearance-none"
                       disabled={submitting}>
@@ -415,40 +409,40 @@ export default function DeployMissionPage() {
               {/* Mission Summary Preview */}
               {(form.title || selectedDisaster || selectedVolunteer) && (
                 <div className="bg-[#0e1420] border border-[#ffb3ad]/15 rounded-2xl p-5 space-y-3">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant flex items-center gap-2">
+                  <p className="text-sm font-black uppercase tracking-widest text-on-surface-variant flex items-center gap-2">
                     <span className="material-symbols-outlined text-primary text-sm">preview</span>
                     Mission Summary Preview
                   </p>
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     {form.title && (
                       <div className="col-span-2">
-                        <p className="text-[9px] text-on-surface-variant uppercase tracking-widest mb-0.5">Title</p>
+                        <p className="text-xs text-on-surface-variant uppercase tracking-widest mb-0.5">Title</p>
                         <p className="font-bold text-white">{form.title}</p>
                       </div>
                     )}
                     {selectedDisaster && (
                       <div>
-                        <p className="text-[9px] text-on-surface-variant uppercase tracking-widest mb-0.5">Zone</p>
+                        <p className="text-xs text-on-surface-variant uppercase tracking-widest mb-0.5">Zone</p>
                         <p className="font-bold text-primary text-xs">{selectedDisaster.title}</p>
                       </div>
                     )}
                     {selectedVolunteer && (
                       <div>
-                        <p className="text-[9px] text-on-surface-variant uppercase tracking-widest mb-0.5">Operative</p>
+                        <p className="text-xs text-on-surface-variant uppercase tracking-widest mb-0.5">Operative</p>
                         <p className="font-bold text-white text-xs">{selectedVolunteer.user.name}</p>
                       </div>
                     )}
                     <div>
-                      <p className="text-[9px] text-on-surface-variant uppercase tracking-widest mb-0.5">Priority</p>
+                      <p className="text-xs text-on-surface-variant uppercase tracking-widest mb-0.5">Priority</p>
                       <p className={`font-black text-xs uppercase ${pc.color}`}>{pc.label}</p>
                     </div>
                     <div>
-                      <p className="text-[9px] text-on-surface-variant uppercase tracking-widest mb-0.5">Status</p>
+                      <p className="text-xs text-on-surface-variant uppercase tracking-widest mb-0.5">Status</p>
                       <p className="font-bold text-white text-xs uppercase">{form.status.replace("_", " ")}</p>
                     </div>
                     {form.due_date && (
                       <div className="col-span-2">
-                        <p className="text-[9px] text-on-surface-variant uppercase tracking-widest mb-0.5">Due</p>
+                        <p className="text-xs text-on-surface-variant uppercase tracking-widest mb-0.5">Due</p>
                         <p className="font-bold text-white text-xs">{new Date(form.due_date).toLocaleString()}</p>
                       </div>
                     )}

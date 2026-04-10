@@ -64,7 +64,7 @@ export default function Page() {
                 <h2 className="text-xl font-black text-[#E53E3E] leading-none">
                   SENTINEL
                 </h2>
-                <p className="font-headline uppercase text-[10px] tracking-[0.2em] text-[#ffb3ad] opacity-70">
+                <p className="font-headline uppercase text-sm tracking-[0.2em] text-[#ffb3ad] opacity-70">
                   COMMAND CENTER
                 </p>
               </div>
@@ -139,7 +139,7 @@ export default function Page() {
 
           <div className="border-t border-[#ffb3ad]/10 pt-4 pb-6 px-6 space-y-3">
             <a
-              className="flex items-center gap-4 text-[#dde2f3] opacity-50 hover:opacity-100 font-headline uppercase text-[10px] tracking-widest"
+              className="flex items-center gap-4 text-[#dde2f3] opacity-50 hover:opacity-100 font-headline uppercase text-sm tracking-widest"
               href="#"
             >
               <span className="material-symbols-outlined text-sm" data-icon="help">
@@ -148,7 +148,7 @@ export default function Page() {
               Support
             </a>
             <a
-              className="flex items-center gap-4 text-[#dde2f3] opacity-50 hover:opacity-100 font-headline uppercase text-[10px] tracking-widest"
+              className="flex items-center gap-4 text-[#dde2f3] opacity-50 hover:opacity-100 font-headline uppercase text-sm tracking-widest"
               href="#"
             >
               <span className="material-symbols-outlined text-sm" data-icon="history">
@@ -215,7 +215,7 @@ export default function Page() {
           {/* Table Container */}
           <div className="bg-surface-container-low rounded-xl overflow-hidden border border-outline-variant/10 shadow-xl">
             <table className="w-full text-left border-collapse">
-              <thead className="bg-surface-container text-outline uppercase text-[10px] font-black tracking-widest border-b border-outline-variant/10">
+              <thead className="bg-surface-container text-outline uppercase text-sm font-black tracking-widest border-b border-outline-variant/10">
                 <tr>
                   <th className="px-6 py-4">#ID</th>
                   <th className="px-6 py-4">Title</th>
@@ -237,7 +237,7 @@ export default function Page() {
                     Flash Flood - Sector G
                   </td>
                   <td className="px-6 py-4">
-                    <span className="bg-tertiary/10 text-tertiary px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider">
+                    <span className="bg-tertiary/10 text-tertiary px-2 py-1 rounded text-sm font-bold uppercase tracking-wider">
                       Flood
                     </span>
                   </td>
@@ -245,7 +245,7 @@ export default function Page() {
                     Jakarta, Indonesia
                   </td>
                   <td className="px-6 py-4 text-center">
-                    <span className="bg-error-container text-on-error-container px-3 py-1 rounded-full text-[10px] font-black uppercase shadow-[inset_0_0_8px_rgba(255,0,0,0.2)] border border-error/20">
+                    <span className="bg-error-container text-on-error-container px-3 py-1 rounded-full text-sm font-black uppercase shadow-[inset_0_0_8px_rgba(255,0,0,0.2)] border border-error/20">
                       Critical
                     </span>
                   </td>
@@ -286,7 +286,7 @@ export default function Page() {
                     Wildfire Threaten Zone 4
                   </td>
                   <td className="px-6 py-4">
-                    <span className="bg-secondary/10 text-secondary px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider">
+                    <span className="bg-secondary/10 text-secondary px-2 py-1 rounded text-sm font-bold uppercase tracking-wider">
                       Wildfire
                     </span>
                   </td>
@@ -294,7 +294,7 @@ export default function Page() {
                     California, USA
                   </td>
                   <td className="px-6 py-4 text-center">
-                    <span className="bg-[#b15b00]/30 text-[#ffdcc5] px-3 py-1 rounded-full text-[10px] font-black uppercase border border-[#b15b00]">
+                    <span className="bg-[#b15b00]/30 text-[#ffdcc5] px-3 py-1 rounded-full text-sm font-black uppercase border border-[#b15b00]">
                       High
                     </span>
                   </td>
@@ -335,7 +335,7 @@ export default function Page() {
                     Structural Collapse
                   </td>
                   <td className="px-6 py-4">
-                    <span className="bg-outline/10 text-outline px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider">
+                    <span className="bg-outline/10 text-outline px-2 py-1 rounded text-sm font-bold uppercase tracking-wider">
                       Accident
                     </span>
                   </td>
@@ -343,7 +343,7 @@ export default function Page() {
                     Mexico City, MX
                   </td>
                   <td className="px-6 py-4 text-center">
-                    <span className="bg-[#242a36] text-[#dde2f3] px-3 py-1 rounded-full text-[10px] font-black uppercase border border-outline/30">
+                    <span className="bg-[#242a36] text-[#dde2f3] px-3 py-1 rounded-full text-sm font-black uppercase border border-outline/30">
                       Medium
                     </span>
                   </td>

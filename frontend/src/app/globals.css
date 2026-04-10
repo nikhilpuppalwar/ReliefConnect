@@ -54,6 +54,11 @@
   --font-label: "Inter", sans-serif;
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem; /* For fixed navbar */
+}
+
 /* Utilities/components to support the Stitch prototypes */
 @layer utilities {
   .hero-gradient {

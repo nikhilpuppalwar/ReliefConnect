@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo, useCallback } from "react";
+import AdminNavLinks from "@/components/AdminNavLinks";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { fetchApi } from "@/lib/api";
@@ -53,26 +54,19 @@ function AdminNav({ active }: { active: string }) {
           </div>
           <div>
             <span className="text-xl font-black text-[#E53E3E] font-['Space_Grotesk'] tracking-tighter uppercase block leading-none">ReliefConnect</span>
-            <span className="text-[9px] font-black text-on-surface-variant uppercase tracking-[0.15em]">Command Center</span>
+            <span className="text-xs font-black text-on-surface-variant uppercase tracking-[0.15em]">Command Center</span>
           </div>
         </div>
 
         {/* Nav */}
-        <nav className="hidden xl:flex items-center gap-1 flex-1 justify-center">
-          {links.map(link => (
-            <button key={link.label} onClick={() => router.push(link.href)}
-              className={`px-3 py-2 font-black text-[10px] tracking-[0.12em] uppercase transition-all rounded-lg hover:text-primary hover:bg-primary/5 ${active === link.href ? "text-primary border-b-2 border-primary" : "text-on-surface/60"}`}>
-              {link.label}
-            </button>
-          ))}
-        </nav>
+        <AdminNavLinks />
 
         {/* Right */}
         <div className="flex items-center gap-3 shrink-0">
           <button onClick={() => router.push("/admin")}
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-white font-black text-[10px] uppercase tracking-widest rounded-xl shadow-[0_4px_16px_rgba(229,62,62,0.3)] hover:brightness-110 active:scale-95 transition-all">
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-white font-black text-sm uppercase tracking-widest rounded-xl shadow-[0_4px_16px_rgba(229,62,62,0.3)] hover:brightness-110 active:scale-95 transition-all">
             <span className="material-symbols-outlined text-sm">add_circle</span>
-            <span className="hidden sm:inline">New Dispatch</span>
+            <span className="hidden 2xl:inline">New Dispatch</span><span className="hidden lg:inline 2xl:hidden">Dispatch</span>
           </button>
 
           <div className="h-8 w-px bg-[#ffb3ad]/10" />
@@ -86,8 +80,8 @@ function AdminNav({ active }: { active: string }) {
             <button onClick={() => setProfileOpen(!profileOpen)}
               className="flex items-center gap-2.5 hover:opacity-90 transition-opacity">
               <div className="text-right hidden sm:block">
-                <p className="text-[10px] font-black text-[#ffb3ad] leading-none">{user?.name?.toUpperCase() || "ADMIN"}</p>
-                <p className="text-[9px] text-on-surface-variant tracking-wider">Global Overseer</p>
+                <p className="text-sm font-black text-[#ffb3ad] leading-none">{user?.name?.toUpperCase() || "ADMIN"}</p>
+                <p className="text-xs text-on-surface-variant tracking-wider">Global Overseer</p>
               </div>
               <div className="w-9 h-9 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary font-black text-sm overflow-hidden">
                 {user?.avatar_url
@@ -101,7 +95,7 @@ function AdminNav({ active }: { active: string }) {
                 onClick={e => e.stopPropagation()}>
                 <div className="px-5 py-4 border-b border-[#ffb3ad]/10">
                   <p className="text-sm font-black text-white">{user?.name || "Admin"}</p>
-                  <p className="text-[10px] text-[#ffb3ad] font-bold uppercase tracking-widest">Global Overseer</p>
+                  <p className="text-sm text-[#ffb3ad] font-bold uppercase tracking-widest">Global Overseer</p>
                 </div>
                 <div className="px-2 py-2 space-y-1">
                   {[
@@ -217,29 +211,29 @@ function RegisterVolunteerModal({ onClose, onSuccess }: { onClose: () => void; o
           <form onSubmit={handleSubmit} className="px-8 py-6 space-y-5">
             {step === 1 ? (
               <>
-                <p className="text-[10px] font-black uppercase tracking-widest text-primary/60">Step 1 of 2 — Account Credentials</p>
+                <p className="text-sm font-black uppercase tracking-widest text-primary/60">Step 1 of 2 — Account Credentials</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Full Name <span className="text-error">*</span></label>
+                    <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Full Name <span className="text-error">*</span></label>
                     <input required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
                       placeholder="Full operative name"
                       className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 transition-colors" disabled={submitting} />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Phone</label>
+                    <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Phone</label>
                     <input type="tel" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
                       placeholder="+91 98765 43210"
                       className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 transition-colors" disabled={submitting} />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Email <span className="text-error">*</span></label>
+                  <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Email <span className="text-error">*</span></label>
                   <input required type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
                     placeholder="operative@relief.ops"
                     className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 transition-colors" disabled={submitting} />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Password <span className="text-error">*</span></label>
+                  <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Password <span className="text-error">*</span></label>
                   <input required type="password" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
                     placeholder="Minimum 8 characters"
                     className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 transition-colors" disabled={submitting} />
@@ -255,32 +249,32 @@ function RegisterVolunteerModal({ onClose, onSuccess }: { onClose: () => void; o
               </>
             ) : (
               <>
-                <p className="text-[10px] font-black uppercase tracking-widest text-primary/60">Step 2 of 2 — Operative Profile</p>
+                <p className="text-sm font-black uppercase tracking-widest text-primary/60">Step 2 of 2 — Operative Profile</p>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Skills / Specializations</label>
+                  <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Skills / Specializations</label>
                   <input value={form.skills} onChange={e => setForm(f => ({ ...f, skills: e.target.value }))}
                     placeholder="Medical, Rescue, Logistics, Communications..."
                     className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 transition-colors" disabled={submitting} />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Zone / Region</label>
+                    <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Zone / Region</label>
                     <input value={form.zone} onChange={e => setForm(f => ({ ...f, zone: e.target.value }))}
                       placeholder="Zone B-4, Northern Sector..."
                       className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 transition-colors" disabled={submitting} />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Experience (years)</label>
+                    <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Experience (years)</label>
                     <input type="number" min="0" value={form.experience_years} onChange={e => setForm(f => ({ ...f, experience_years: e.target.value }))}
                       className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none focus:border-primary/40 transition-colors" disabled={submitting} />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Initial Availability</label>
+                  <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Initial Availability</label>
                   <div className="grid grid-cols-3 gap-2">
                     {(["available", "busy", "offline"] as const).map(a => (
                       <button key={a} type="button" onClick={() => setForm(f => ({ ...f, availability: a }))} disabled={submitting}
-                        className={`py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${form.availability === a ? "bg-primary/15 text-primary border-primary/30" : "bg-surface-container/50 text-on-surface-variant border-outline-variant/10"}`}>
+                        className={`py-2.5 rounded-xl text-sm font-black uppercase tracking-widest transition-all border ${form.availability === a ? "bg-primary/15 text-primary border-primary/30" : "bg-surface-container/50 text-on-surface-variant border-outline-variant/10"}`}>
                         {a}
                       </button>
                     ))}
@@ -346,7 +340,7 @@ function ProfileDrawer({ volunteer, onClose, onVerify }: { volunteer: Volunteer;
               <h3 className="text-lg font-black text-white leading-tight">{volunteer.user.name}</h3>
               <p className="text-xs font-mono text-primary mt-0.5">VOL-{String(volunteer.user_id).padStart(4, "0")}</p>
               <div className="flex flex-wrap gap-2 mt-2">
-                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black uppercase border ${
+                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm font-black uppercase border ${
                   avail === "available" ? "bg-green-500/15 text-green-400 border-green-500/30"
                   : avail === "busy" ? "bg-orange-500/15 text-orange-400 border-orange-500/30"
                   : "bg-gray-500/15 text-gray-400 border-gray-500/30"}`}>
@@ -354,7 +348,7 @@ function ProfileDrawer({ volunteer, onClose, onVerify }: { volunteer: Volunteer;
                   {avail}
                 </span>
                 {isVerified && (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black uppercase bg-blue-500/15 text-blue-400 border border-blue-500/30">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-black uppercase bg-blue-500/15 text-blue-400 border border-blue-500/30">
                     <span className="material-symbols-outlined text-xs" style={{ fontVariationSettings: '"FILL" 1' }}>verified</span>
                     Verified
                   </span>
@@ -373,7 +367,7 @@ function ProfileDrawer({ volunteer, onClose, onVerify }: { volunteer: Volunteer;
               { label: "Missions", value: volunteer.missions_count?.toString() || "0" },
             ].map(item => (
               <div key={item.label} className="px-4 py-3 flex justify-between items-center bg-surface-container-low">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">{item.label}</span>
+                <span className="text-sm font-bold uppercase tracking-widest text-on-surface-variant">{item.label}</span>
                 <span className="text-xs font-bold text-white max-w-[60%] text-right truncate">{item.value}</span>
               </div>
             ))}
@@ -382,10 +376,10 @@ function ProfileDrawer({ volunteer, onClose, onVerify }: { volunteer: Volunteer;
           {/* Skills */}
           {skills.length > 0 && (
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-3">Skills & Specializations</p>
+              <p className="text-sm font-black uppercase tracking-widest text-on-surface-variant mb-3">Skills & Specializations</p>
               <div className="flex flex-wrap gap-2">
                 {skills.map(s => (
-                  <span key={s} className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase bg-primary/10 text-primary border border-primary/20">{s}</span>
+                  <span key={s} className="px-2.5 py-1 rounded-full text-sm font-black uppercase bg-primary/10 text-primary border border-primary/20">{s}</span>
                 ))}
               </div>
             </div>
@@ -454,7 +448,7 @@ function AssignTaskModal({ volunteer, onClose, onSuccess }: { volunteer: Volunte
           style={{ background: "linear-gradient(135deg, rgba(229,62,62,0.08), #0e1420)" }}>
           <div>
             <h2 className="text-sm font-black text-white uppercase tracking-tight">Assign Task</h2>
-            <p className="text-[10px] text-on-surface-variant">→ {volunteer.user.name}</p>
+            <p className="text-sm text-on-surface-variant">→ {volunteer.user.name}</p>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-white transition-colors">
             <span className="material-symbols-outlined text-sm">close</span>
@@ -471,20 +465,20 @@ function AssignTaskModal({ volunteer, onClose, onSuccess }: { volunteer: Volunte
         ) : (
           <form onSubmit={handleSubmit} className="px-8 py-6 space-y-4">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Task Title <span className="text-error">*</span></label>
+              <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Task Title <span className="text-error">*</span></label>
               <input required value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
                 placeholder="E.g. Search & Rescue — Zone B Perimeter"
                 className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 transition-colors" />
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Description</label>
+              <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Description</label>
               <textarea rows={2} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
                 placeholder="Mission objectives and notes..."
                 className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 resize-none transition-colors" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Disaster Zone <span className="text-error">*</span></label>
+                <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Disaster Zone <span className="text-error">*</span></label>
                 <select required value={form.disaster_id} onChange={e => setForm(f => ({ ...f, disaster_id: e.target.value }))}
                   className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none focus:border-primary/40 transition-colors appearance-none">
                   <option value="">Select disaster...</option>
@@ -492,7 +486,7 @@ function AssignTaskModal({ volunteer, onClose, onSuccess }: { volunteer: Volunte
                 </select>
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Deadline</label>
+                <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Deadline</label>
                 <input type="datetime-local" value={form.due_date} onChange={e => setForm(f => ({ ...f, due_date: e.target.value }))}
                   className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none focus:border-primary/40 transition-colors" />
               </div>
@@ -666,7 +660,7 @@ export default function AdminVolunteersPage() {
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
-              <p className="text-primary font-black uppercase tracking-widest text-[10px] mb-1">FIELD OPERATIVE REGISTRY</p>
+              <p className="text-primary font-black uppercase tracking-widest text-sm mb-1">FIELD OPERATIVE REGISTRY</p>
               <h1 className="text-4xl font-black tracking-tight uppercase font-['Space_Grotesk'] text-white">Volunteer Management</h1>
               <p className="text-on-surface-variant text-sm mt-1 max-w-xl">Monitor active personnel, verify credentials, and deploy field operatives to disaster zones.</p>
             </div>
@@ -688,8 +682,8 @@ export default function AdminVolunteersPage() {
             ].map(s => (
               <div key={s.label} className="bg-surface-container-low p-5 rounded-xl border-l-4 relative overflow-hidden" style={{ borderLeftColor: s.color }}>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant">{s.label}</span>
-                  <span className="text-[9px] font-black px-2 py-0.5 rounded" style={{ color: s.color, background: `${s.color}18` }}>{s.badge}</span>
+                  <span className="text-xs font-black uppercase tracking-widest text-on-surface-variant">{s.label}</span>
+                  <span className="text-xs font-black px-2 py-0.5 rounded" style={{ color: s.color, background: `${s.color}18` }}>{s.badge}</span>
                 </div>
                 <span className="text-3xl font-black text-white font-['Space_Grotesk']">{loading ? "—" : s.value.toLocaleString()}</span>
                 <div className="absolute -bottom-2 -right-2 opacity-5">
@@ -737,7 +731,7 @@ export default function AdminVolunteersPage() {
               {/* Verified Toggle */}
               <button onClick={() => { setVerifiedOnly(!verifiedOnly); setPage(1); }}
                 className="flex items-center gap-3 px-5 py-3.5 hover:bg-surface-container-high transition-colors">
-                <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant whitespace-nowrap">Verified Only</span>
+                <span className="text-sm font-black uppercase tracking-widest text-on-surface-variant whitespace-nowrap">Verified Only</span>
                 <div className={`w-9 h-5 rounded-full transition-colors relative ${verifiedOnly ? "bg-blue-500" : "bg-surface-container-high"}`}>
                   <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full transition-all ${verifiedOnly ? "left-4" : "left-0.5"}`} />
                 </div>
@@ -760,7 +754,7 @@ export default function AdminVolunteersPage() {
                 <thead>
                   <tr className="bg-surface-container border-b border-outline-variant/15">
                     {["Operative", "Contact Info", "Skills", "Zone", "Availability", "Verified", "Missions", "Actions"].map((h, i) => (
-                      <th key={h} className={`px-5 py-4 text-[9px] font-black uppercase tracking-widest text-on-surface-variant ${i === 7 ? "text-right" : ""} ${i === 4 || i === 5 || i === 6 ? "text-center" : ""}`}>{h}</th>
+                      <th key={h} className={`px-5 py-4 text-xs font-black uppercase tracking-widest text-on-surface-variant ${i === 7 ? "text-right" : ""} ${i === 4 || i === 5 || i === 6 ? "text-center" : ""}`}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -798,7 +792,7 @@ export default function AdminVolunteersPage() {
                               </div>
                               <div>
                                 <div className="text-sm font-black text-white">{v.user.name}</div>
-                                <div className="text-[10px] font-mono text-primary/70">VOL-{String(v.user_id).padStart(4, "0")}</div>
+                                <div className="text-sm font-mono text-primary/70">VOL-{String(v.user_id).padStart(4, "0")}</div>
                               </div>
                             </div>
                           </td>
@@ -806,17 +800,17 @@ export default function AdminVolunteersPage() {
                           {/* Contact */}
                           <td className="px-5 py-4">
                             <div className="text-xs text-on-surface-variant">{v.user.email}</div>
-                            {v.user.phone && <div className="text-[10px] text-on-surface-variant/50 mt-0.5">{v.user.phone}</div>}
+                            {v.user.phone && <div className="text-sm text-on-surface-variant/50 mt-0.5">{v.user.phone}</div>}
                           </td>
 
                           {/* Skills */}
                           <td className="px-5 py-4">
                             <div className="flex flex-wrap gap-1 max-w-[180px]">
                               {skills.slice(0, 2).map(s => (
-                                <span key={s} className="px-2 py-0.5 text-[9px] font-black uppercase bg-primary/10 text-primary border border-primary/15 rounded">{s}</span>
+                                <span key={s} className="px-2 py-0.5 text-xs font-black uppercase bg-primary/10 text-primary border border-primary/15 rounded">{s}</span>
                               ))}
-                              {skills.length > 2 && <span className="text-[9px] text-on-surface-variant">+{skills.length - 2}</span>}
-                              {skills.length === 0 && <span className="text-[10px] text-on-surface-variant">—</span>}
+                              {skills.length > 2 && <span className="text-xs text-on-surface-variant">+{skills.length - 2}</span>}
+                              {skills.length === 0 && <span className="text-sm text-on-surface-variant">—</span>}
                             </div>
                           </td>
 
@@ -825,7 +819,7 @@ export default function AdminVolunteersPage() {
 
                           {/* Availability */}
                           <td className="px-5 py-4 text-center">
-                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black uppercase border ${
+                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm font-black uppercase border ${
                               avail === "available" ? "bg-green-500/15 text-green-400 border-green-500/30"
                               : avail === "busy" ? "bg-orange-500/15 text-orange-400 border-orange-500/30"
                               : "bg-gray-500/15 text-gray-400 border-gray-500/30"}`}>
@@ -871,7 +865,7 @@ export default function AdminVolunteersPage() {
 
             {/* Pagination */}
             <div className="px-6 py-4 bg-surface-container/50 border-t border-outline-variant/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
+              <span className="text-sm font-bold text-on-surface-variant uppercase tracking-widest">
                 Showing {filtered.length === 0 ? 0 : (page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length} operatives
               </span>
               <div className="flex gap-1.5 items-center">

@@ -41,7 +41,7 @@ export default function ScreenActionsBridge() {
       const has = (value: string) => text.includes(value);
 
       // Landing/cross-role CTA mappings
-      if (has("report a disaster") || has("report incident")) return go("/civilian/report");
+      if ((has("report a disaster") || has("report incident")) && !pathname.startsWith("/admin")) return go("/civilian/report");
       if (has("request sos") || has("new help request") || has("file sos request")) return go("/civilian/sos");
       if (has("view all task stream")) return go("/volunteer/tasks");
       if (has("upload certificate")) return go("/admin/certificates");

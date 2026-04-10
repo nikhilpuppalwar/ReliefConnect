@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo, useCallback } from "react";
+import AdminNavLinks from "@/components/AdminNavLinks";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { fetchApi } from "@/lib/api";
@@ -108,24 +109,17 @@ function AdminNav({ active }: { active: string }) {
           </div>
           <div>
             <span className="text-xl font-black text-[#E53E3E] font-['Space_Grotesk'] tracking-tighter uppercase block leading-none">ReliefConnect</span>
-            <span className="text-[9px] font-black text-on-surface-variant uppercase tracking-[0.15em]">Command Center</span>
+            <span className="text-xs font-black text-on-surface-variant uppercase tracking-[0.15em]">Command Center</span>
           </div>
         </div>
 
-        <nav className="hidden xl:flex items-center gap-1 flex-1 justify-center">
-          {links.map(link => (
-            <button key={link.label} onClick={() => router.push(link.href)}
-              className={`px-3 py-2 font-black text-[10px] tracking-[0.12em] uppercase transition-all rounded-lg hover:text-primary hover:bg-primary/5 ${active === link.href ? "text-primary border-b-2 border-primary" : "text-on-surface/60"}`}>
-              {link.label}
-            </button>
-          ))}
-        </nav>
+        <AdminNavLinks />
 
         <div className="flex items-center gap-3 shrink-0">
           <button onClick={() => router.push("/admin")}
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-white font-black text-[10px] uppercase tracking-widest rounded-xl shadow-[0_4px_16px_rgba(229,62,62,0.3)] hover:brightness-110 active:scale-95 transition-all">
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-white font-black text-sm uppercase tracking-widest rounded-xl shadow-[0_4px_16px_rgba(229,62,62,0.3)] hover:brightness-110 active:scale-95 transition-all">
             <span className="material-symbols-outlined text-sm">add_circle</span>
-            <span className="hidden sm:inline">New Dispatch</span>
+            <span className="hidden 2xl:inline">New Dispatch</span><span className="hidden lg:inline 2xl:hidden">Dispatch</span>
           </button>
           <div className="h-8 w-px bg-[#ffb3ad]/10" />
           <button className="relative text-on-surface-variant hover:text-primary transition-colors">
@@ -135,8 +129,8 @@ function AdminNav({ active }: { active: string }) {
           <div className="relative">
             <button onClick={() => setProfileOpen(!profileOpen)} className="flex items-center gap-2.5 hover:opacity-90 transition-opacity">
               <div className="text-right hidden sm:block">
-                <p className="text-[10px] font-black text-[#ffb3ad] leading-none">{user?.name?.toUpperCase() || "ADMIN"}</p>
-                <p className="text-[9px] text-on-surface-variant tracking-wider">Global Overseer</p>
+                <p className="text-sm font-black text-[#ffb3ad] leading-none">{user?.name?.toUpperCase() || "ADMIN"}</p>
+                <p className="text-xs text-on-surface-variant tracking-wider">Global Overseer</p>
               </div>
               <div className="w-9 h-9 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary font-black text-sm overflow-hidden">
                 {user?.avatar_url ? <img src={user.avatar_url} alt="" className="w-full h-full object-cover" /> : user?.name?.[0]?.toUpperCase() || "A"}
@@ -146,7 +140,7 @@ function AdminNav({ active }: { active: string }) {
               <div className="absolute top-12 right-0 w-60 bg-[#0e1420] border border-[#ffb3ad]/15 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.7)] overflow-hidden z-[200]" onClick={e => e.stopPropagation()}>
                 <div className="px-5 py-4 border-b border-[#ffb3ad]/10">
                   <p className="text-sm font-black text-white">{user?.name || "Admin"}</p>
-                  <p className="text-[10px] text-[#ffb3ad] font-bold uppercase tracking-widest">Global Overseer</p>
+                  <p className="text-sm text-[#ffb3ad] font-bold uppercase tracking-widest">Global Overseer</p>
                 </div>
                 <div className="px-2 py-2 space-y-1">
                   {[{ label: "Admin Profile", icon: "manage_accounts", href: "/admin/profile" }, { label: "Dashboard", icon: "dashboard", href: "/admin" }].map(item => (
@@ -213,7 +207,7 @@ function AddResourceModal({ onClose, onSuccess }: { onClose: () => void; onSucce
             </div>
             <div>
               <h2 className="text-sm font-black text-white uppercase tracking-tight">Add Resource</h2>
-              <p className="text-[10px] text-on-surface-variant">Register a new asset in the inventory</p>
+              <p className="text-sm text-on-surface-variant">Register a new asset in the inventory</p>
             </div>
           </div>
           <button onClick={onClose} disabled={submitting} className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-white transition-colors">
@@ -232,38 +226,38 @@ function AddResourceModal({ onClose, onSuccess }: { onClose: () => void; onSucce
           <form onSubmit={handleSubmit} className="px-8 py-6 space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2 space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Resource Name <span className="text-error">*</span></label>
+                <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Resource Name <span className="text-error">*</span></label>
                 <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
                   placeholder="E.g. Food Packets, Insulin Supply..."
                   className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 transition-colors" disabled={submitting} />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Total Quantity <span className="text-error">*</span></label>
+                <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Total Quantity <span className="text-error">*</span></label>
                 <input type="number" min="0" value={form.quantity} onChange={e => setForm(f => ({ ...f, quantity: e.target.value }))}
                   placeholder="500"
                   className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 transition-colors" disabled={submitting} />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Available Qty</label>
+                <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Available Qty</label>
                 <input type="number" min="0" value={form.quantity_available} onChange={e => setForm(f => ({ ...f, quantity_available: e.target.value }))}
                   placeholder="Defaults to total"
                   className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 transition-colors" disabled={submitting} />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Unit</label>
+                <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Unit</label>
                 <input value={form.unit} onChange={e => setForm(f => ({ ...f, unit: e.target.value }))}
                   placeholder="units, kg, litres..."
                   className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 transition-colors" disabled={submitting} />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Category</label>
+                <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Category</label>
                 <select value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
                   className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none appearance-none" disabled={submitting}>
                   {Object.entries(CAT_MAP).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
                 </select>
               </div>
               <div className="col-span-2 space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Storage Location</label>
+                <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Storage Location</label>
                 <input value={form.location} onChange={e => setForm(f => ({ ...f, location: e.target.value }))}
                   placeholder="Warehouse A, Zone B depot..."
                   className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 transition-colors" disabled={submitting} />
@@ -327,7 +321,7 @@ function EditResourceModal({ resource, onClose, onSuccess }: { resource: Resourc
         <div className="px-8 py-5 border-b border-outline-variant/10 flex items-center justify-between" style={{ background: "linear-gradient(135deg, rgba(229,62,62,0.06), #0e1420)" }}>
           <div>
             <h2 className="text-sm font-black text-white uppercase tracking-tight">Edit Resource</h2>
-            <p className="text-[10px] text-on-surface-variant">{resource.name}</p>
+            <p className="text-sm text-on-surface-variant">{resource.name}</p>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-white transition-colors">
             <span className="material-symbols-outlined text-sm">close</span>
@@ -343,25 +337,25 @@ function EditResourceModal({ resource, onClose, onSuccess }: { resource: Resourc
         ) : (
           <form onSubmit={handleSubmit} className="px-8 py-6 space-y-4">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Name</label>
+              <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Name</label>
               <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
                 className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none focus:border-primary/40 transition-colors" disabled={submitting} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Quantity</label>
+                <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Quantity</label>
                 <input type="number" min="0" value={form.quantity} onChange={e => setForm(f => ({ ...f, quantity: e.target.value }))}
                   className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none focus:border-primary/40 transition-colors" disabled={submitting} />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Unit</label>
+                <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Unit</label>
                 <input value={form.unit} onChange={e => setForm(f => ({ ...f, unit: e.target.value }))}
                   placeholder="units, kg..."
                   className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 transition-colors" disabled={submitting} />
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Location</label>
+              <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Location</label>
               <input value={form.location} onChange={e => setForm(f => ({ ...f, location: e.target.value }))}
                 placeholder="Warehouse / Zone..."
                 className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 transition-colors" disabled={submitting} />
@@ -427,7 +421,7 @@ function AllocateModal({ resource, onClose, onSuccess }: { resource: Resource; o
             </div>
             <div>
               <h2 className="text-sm font-black text-white uppercase tracking-tight">Allocate to Zone</h2>
-              <p className="text-[10px] text-on-surface-variant">{resource.name} · {resource.quantity.toLocaleString()} {resource.unit || "units"} available</p>
+              <p className="text-sm text-on-surface-variant">{resource.name} · {resource.quantity.toLocaleString()} {resource.unit || "units"} available</p>
             </div>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-white transition-colors">
@@ -446,7 +440,7 @@ function AllocateModal({ resource, onClose, onSuccess }: { resource: Resource; o
         ) : (
           <form onSubmit={handleSubmit} className="px-8 py-6 space-y-4">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Target Disaster Zone <span className="text-error">*</span></label>
+              <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Target Disaster Zone <span className="text-error">*</span></label>
               {disasters.length === 0 ? (
                 <p className="text-xs text-on-surface-variant italic py-2">No active disasters found.</p>
               ) : (
@@ -458,7 +452,7 @@ function AllocateModal({ resource, onClose, onSuccess }: { resource: Resource; o
               )}
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">
+              <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">
                 Quantity to Dispatch <span className="text-error">*</span>
                 <span className="ml-2 text-on-surface-variant/50">(max: {resource.quantity.toLocaleString()})</span>
               </label>
@@ -468,7 +462,7 @@ function AllocateModal({ resource, onClose, onSuccess }: { resource: Resource; o
                 className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 transition-colors" disabled={submitting} />
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Note / Instructions</label>
+              <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Note / Instructions</label>
               <textarea rows={2} value={form.note} onChange={e => setForm(f => ({ ...f, note: e.target.value }))}
                 placeholder="Delivery instructions, priority level, target location..."
                 className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 resize-none transition-colors" disabled={submitting} />
@@ -554,7 +548,7 @@ function ResourceCard({ r, onEdit, onAllocate, onDelete }: { r: Resource; onEdit
 
           {/* Category badge + delete — right-aligned, no overlap */}
           <div className="flex items-center gap-2 flex-shrink-0">
-            <span className="text-[9px] font-black px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface-variant uppercase tracking-widest border border-outline-variant/10">
+            <span className="text-xs font-black px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface-variant uppercase tracking-widest border border-outline-variant/10">
               {cfg.label}
             </span>
             <button onClick={onDelete}
@@ -567,11 +561,11 @@ function ResourceCard({ r, onEdit, onAllocate, onDelete }: { r: Resource; onEdit
 
         {/* Title */}
         <h4 className="text-lg font-black text-white uppercase tracking-tight leading-tight mb-1 break-words line-clamp-2 min-w-0 pr-2">{r.name}</h4>
-        {r.location && <p className="text-[10px] text-on-surface-variant mb-4 flex items-center gap-1 min-w-0"><span className="material-symbols-outlined text-xs shrink-0">location_on</span><span className="truncate">{r.location}</span></p>}
+        {r.location && <p className="text-sm text-on-surface-variant mb-4 flex items-center gap-1 min-w-0"><span className="material-symbols-outlined text-xs shrink-0">location_on</span><span className="truncate">{r.location}</span></p>}
 
         {/* Stock bar */}
         <div className="space-y-2 mb-5">
-          <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
+          <div className="flex justify-between text-sm font-black uppercase tracking-widest">
             <span className="text-on-surface-variant">Availability</span>
             <span className={ss.color}>{avail.toLocaleString()}/{total.toLocaleString()} {r.unit || "units"}</span>
           </div>
@@ -582,13 +576,13 @@ function ResourceCard({ r, onEdit, onAllocate, onDelete }: { r: Resource; onEdit
 
         {/* Critical warning */}
         {ss.label === "CRITICAL" && (
-          <div className="flex items-center gap-2 text-red-400 text-[10px] font-black uppercase tracking-widest bg-red-500/10 border border-red-500/20 px-3 py-2 rounded-xl mb-4">
+          <div className="flex items-center gap-2 text-red-400 text-sm font-black uppercase tracking-widest bg-red-500/10 border border-red-500/20 px-3 py-2 rounded-xl mb-4">
             <span className="material-symbols-outlined text-sm">error</span>
             Critical Restock Required
           </div>
         )}
         {ss.label === "LOW" && (
-          <div className="flex items-center gap-2 text-orange-400 text-[10px] font-black uppercase tracking-widest bg-orange-500/10 border border-orange-500/20 px-3 py-2 rounded-xl mb-4">
+          <div className="flex items-center gap-2 text-orange-400 text-sm font-black uppercase tracking-widest bg-orange-500/10 border border-orange-500/20 px-3 py-2 rounded-xl mb-4">
             <span className="material-symbols-outlined text-sm">warning</span>
             Running Low — Restock Soon
           </div>
@@ -628,16 +622,16 @@ function ResourceRow({ r, onEdit, onAllocate, onDelete }: { r: Resource; onEdit:
           </div>
           <div>
             <p className="text-sm font-bold text-white">{r.name}</p>
-            {r.location && <p className="text-[10px] text-on-surface-variant">{r.location}</p>}
+            {r.location && <p className="text-sm text-on-surface-variant">{r.location}</p>}
           </div>
         </div>
       </td>
       <td className="px-5 py-4">
-        <span className={`text-[9px] font-black px-2.5 py-1 rounded-full border ${ss.bg} ${ss.color} ${ss.border}`}>{cfg.label}</span>
+        <span className={`text-xs font-black px-2.5 py-1 rounded-full border ${ss.bg} ${ss.color} ${ss.border}`}>{cfg.label}</span>
       </td>
       <td className="px-5 py-4 text-sm font-bold text-white">{r.quantity.toLocaleString()} {r.unit || "units"}</td>
       <td className="px-5 py-4">
-        <span className={`text-[9px] font-black px-2.5 py-1 rounded-full border ${ss.bg} ${ss.color} ${ss.border}`}>{ss.label}</span>
+        <span className={`text-xs font-black px-2.5 py-1 rounded-full border ${ss.bg} ${ss.color} ${ss.border}`}>{ss.label}</span>
       </td>
       <td className="px-5 py-4 text-xs text-on-surface-variant">{timeAgo(r.created_at)}</td>
       <td className="px-5 py-4">
@@ -684,8 +678,11 @@ export default function AdminAssetsPage() {
         fetchApi("/resource-allocations").catch(() => null),
       ]);
       const rawR = rRes?.data;
-      setResources(Array.isArray(rawR) ? rawR : (rawR?.resources || []));
-      if (aRes?.data?.allocations) setAllocations(aRes.data.allocations);
+      const rawList = Array.isArray(rawR) ? rawR : (rawR?.resources || []);
+      setResources(rawList.map((r: any) => ({ ...r, quantity: Number(r.quantity) })));
+      if (aRes?.data?.allocations) {
+        setAllocations(aRes.data.allocations.map((a: any) => ({ ...a, quantity: Number(a.quantity) })));
+      }
     } catch (e: any) {
       setError(e?.message || "Failed to load assets");
     } finally { setLoading(false); }
@@ -735,7 +732,7 @@ export default function AdminAssetsPage() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
-              <p className="text-primary font-black uppercase tracking-widest text-[10px] mb-1">INVENTORY MANAGEMENT</p>
+              <p className="text-primary font-black uppercase tracking-widest text-sm mb-1">INVENTORY MANAGEMENT</p>
               <h1 className="text-4xl font-black tracking-tight uppercase font-['Space_Grotesk'] text-white">Asset Inventory</h1>
               <p className="text-on-surface-variant text-sm mt-1 max-w-xl">Monitor stocks, deploy assets to disaster zones, and manage field resource allocation.</p>
             </div>
@@ -757,8 +754,8 @@ export default function AdminAssetsPage() {
             ].map(s => (
               <div key={s.label} className="bg-surface-container-low p-5 rounded-xl border-l-4 relative overflow-hidden" style={{ borderLeftColor: s.color }}>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant">{s.label}</span>
-                  <span className="text-[9px] font-black px-2 py-0.5 rounded" style={{ color: s.color, background: `${s.color}18` }}>{s.badge}</span>
+                  <span className="text-xs font-black uppercase tracking-widest text-on-surface-variant">{s.label}</span>
+                  <span className="text-xs font-black px-2 py-0.5 rounded" style={{ color: s.color, background: `${s.color}18` }}>{s.badge}</span>
                 </div>
                 <span className="text-3xl font-black text-white font-['Space_Grotesk']">{loading ? "—" : s.value.toLocaleString()}</span>
                 <div className="absolute -bottom-2 -right-2 opacity-5">
@@ -848,7 +845,7 @@ export default function AdminAssetsPage() {
                 <thead>
                   <tr className="bg-surface-container border-b border-outline-variant/10">
                     {["Asset", "Category", "Quantity", "Status", "Added", "Actions"].map((h, i) => (
-                      <th key={h} className={`px-5 py-4 text-[9px] font-black uppercase tracking-widest text-on-surface-variant ${i === 5 ? "text-right" : ""}`}>{h}</th>
+                      <th key={h} className={`px-5 py-4 text-xs font-black uppercase tracking-widest text-on-surface-variant ${i === 5 ? "text-right" : ""}`}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -869,14 +866,14 @@ export default function AdminAssetsPage() {
             <div className="bg-surface-container-low rounded-xl overflow-hidden border border-outline-variant/5 shadow-xl">
               <div className="px-6 py-5 border-b border-outline-variant/10 flex items-center justify-between">
                 <h3 className="text-sm font-black uppercase tracking-widest text-white">Recent Deployments</h3>
-                <span className="text-[10px] text-on-surface-variant">{allocations.length} total</span>
+                <span className="text-sm text-on-surface-variant">{allocations.length} total</span>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-surface-container border-b border-outline-variant/10">
                       {["Asset", "Disaster Zone", "Quantity", "Dispatched By", "Time", "Status"].map(h => (
-                        <th key={h} className="px-5 py-4 text-[9px] font-black uppercase tracking-widest text-on-surface-variant">{h}</th>
+                        <th key={h} className="px-5 py-4 text-xs font-black uppercase tracking-widest text-on-surface-variant">{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -889,7 +886,7 @@ export default function AdminAssetsPage() {
                         <td className="px-5 py-4 text-xs text-on-surface-variant">{a.allocated_by_name}</td>
                         <td className="px-5 py-4 text-xs text-on-surface-variant">{timeAgo(a.allocated_at)}</td>
                         <td className="px-5 py-4">
-                          <span className="flex items-center gap-1.5 text-[10px] font-black uppercase text-green-400">
+                          <span className="flex items-center gap-1.5 text-sm font-black uppercase text-green-400">
                             <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />Delivered
                           </span>
                         </td>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo, useCallback } from "react";
+import AdminNavLinks from "@/components/AdminNavLinks";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { fetchApi } from "@/lib/api";
@@ -23,6 +24,7 @@ type Task = {
   disaster_location: string | null;
   assigned_to_name: string | null;
   assigned_by_name: string | null;
+  priority: "low" | "medium" | "high" | "critical";
 };
 
 type Volunteer = { id: number; user_id: number; user: { name: string; email: string }; availability_status?: string; availability?: string };
@@ -102,24 +104,17 @@ function AdminNav({ active }: { active: string }) {
           </div>
           <div>
             <span className="text-xl font-black text-[#E53E3E] font-['Space_Grotesk'] tracking-tighter uppercase block leading-none">ReliefConnect</span>
-            <span className="text-[9px] font-black text-on-surface-variant uppercase tracking-[0.15em]">Command Center</span>
+            <span className="text-xs font-black text-on-surface-variant uppercase tracking-[0.15em]">Command Center</span>
           </div>
         </div>
 
-        <nav className="hidden xl:flex items-center gap-1 flex-1 justify-center">
-          {links.map(link => (
-            <button key={link.label} onClick={() => router.push(link.href)}
-              className={`px-3 py-2 font-black text-[10px] tracking-[0.12em] uppercase transition-all rounded-lg hover:text-primary hover:bg-primary/5 ${active === link.href ? "text-primary border-b-2 border-primary" : "text-on-surface/60"}`}>
-              {link.label}
-            </button>
-          ))}
-        </nav>
+        <AdminNavLinks />
 
         <div className="flex items-center gap-3 shrink-0">
           <button onClick={() => router.push("/admin")}
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-white font-black text-[10px] uppercase tracking-widest rounded-xl shadow-[0_4px_16px_rgba(229,62,62,0.3)] hover:brightness-110 active:scale-95 transition-all">
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-white font-black text-sm uppercase tracking-widest rounded-xl shadow-[0_4px_16px_rgba(229,62,62,0.3)] hover:brightness-110 active:scale-95 transition-all">
             <span className="material-symbols-outlined text-sm">add_circle</span>
-            <span className="hidden sm:inline">New Dispatch</span>
+            <span className="hidden 2xl:inline">New Dispatch</span><span className="hidden lg:inline 2xl:hidden">Dispatch</span>
           </button>
           <div className="h-8 w-px bg-[#ffb3ad]/10" />
           <button className="relative text-on-surface-variant hover:text-primary transition-colors">
@@ -129,8 +124,8 @@ function AdminNav({ active }: { active: string }) {
           <div className="relative">
             <button onClick={() => setProfileOpen(!profileOpen)} className="flex items-center gap-2.5 hover:opacity-90 transition-opacity">
               <div className="text-right hidden sm:block">
-                <p className="text-[10px] font-black text-[#ffb3ad] leading-none">{user?.name?.toUpperCase() || "ADMIN"}</p>
-                <p className="text-[9px] text-on-surface-variant tracking-wider">Global Overseer</p>
+                <p className="text-sm font-black text-[#ffb3ad] leading-none">{user?.name?.toUpperCase() || "ADMIN"}</p>
+                <p className="text-xs text-on-surface-variant tracking-wider">Global Overseer</p>
               </div>
               <div className="w-9 h-9 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary font-black text-sm overflow-hidden">
                 {user?.avatar_url ? <img src={user.avatar_url} alt="" className="w-full h-full object-cover" /> : user?.name?.[0]?.toUpperCase() || "A"}
@@ -140,7 +135,7 @@ function AdminNav({ active }: { active: string }) {
               <div className="absolute top-12 right-0 w-60 bg-[#0e1420] border border-[#ffb3ad]/15 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.7)] overflow-hidden z-[200]" onClick={e => e.stopPropagation()}>
                 <div className="px-5 py-4 border-b border-[#ffb3ad]/10">
                   <p className="text-sm font-black text-white">{user?.name || "Admin"}</p>
-                  <p className="text-[10px] text-[#ffb3ad] font-bold uppercase tracking-widest">Global Overseer</p>
+                  <p className="text-sm text-[#ffb3ad] font-bold uppercase tracking-widest">Global Overseer</p>
                 </div>
                 <div className="px-2 py-2 space-y-1">
                   {[{ label: "Admin Profile", icon: "manage_accounts", href: "/admin/profile" }, { label: "Dashboard", icon: "dashboard", href: "/admin" }].map(item => (
@@ -171,8 +166,8 @@ function DeployMissionModal({ onClose, onSuccess }: { onClose: () => void; onSuc
   const [disasters, setDisasters]   = useState<Disaster[]>([]);
   const [volunteers, setVolunteers] = useState<Volunteer[]>([]);
   const [form, setForm] = useState({
-    title: "", description: "", disaster_id: "", volunteer_id: "",
     due_date: "", status: "assigned" as Task["status"],
+    priority: "medium" as Task["priority"],
   });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError]           = useState("");
@@ -203,6 +198,7 @@ function DeployMissionModal({ onClose, onSuccess }: { onClose: () => void; onSuc
           volunteer_id: Number(form.volunteer_id),
           due_date: form.due_date || undefined,
           status: form.status,
+          priority: form.priority,
         }),
       });
       setSuccess(true);
@@ -223,7 +219,7 @@ function DeployMissionModal({ onClose, onSuccess }: { onClose: () => void; onSuc
             </div>
             <div>
               <h2 className="text-sm font-black text-white uppercase tracking-tight">Deploy Mission</h2>
-              <p className="text-[10px] text-on-surface-variant">Create and assign a new operational task</p>
+              <p className="text-sm text-on-surface-variant">Create and assign a new operational task</p>
             </div>
           </div>
           <button onClick={onClose} disabled={submitting} className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-white transition-colors">
@@ -241,20 +237,20 @@ function DeployMissionModal({ onClose, onSuccess }: { onClose: () => void; onSuc
         ) : (
           <form onSubmit={handleSubmit} className="px-8 py-6 space-y-4">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Mission Title <span className="text-error">*</span></label>
+              <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Mission Title <span className="text-error">*</span></label>
               <input required value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
                 placeholder="E.g. Emergency Supply Delivery — Zone B"
                 className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 transition-colors" disabled={submitting} />
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Description</label>
+              <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Description</label>
               <textarea rows={2} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
                 placeholder="Operational objectives, resources needed, hazard notes..."
                 className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 resize-none transition-colors" disabled={submitting} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Disaster Zone <span className="text-error">*</span></label>
+                <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Disaster Zone <span className="text-error">*</span></label>
                 <select required value={form.disaster_id} onChange={e => setForm(f => ({ ...f, disaster_id: e.target.value }))}
                   className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none focus:border-primary/40 appearance-none" disabled={submitting}>
                   <option value="">Select disaster...</option>
@@ -262,7 +258,7 @@ function DeployMissionModal({ onClose, onSuccess }: { onClose: () => void; onSuc
                 </select>
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Assign Volunteer <span className="text-error">*</span></label>
+                <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Assign Volunteer <span className="text-error">*</span></label>
                 <select required value={form.volunteer_id} onChange={e => setForm(f => ({ ...f, volunteer_id: e.target.value }))}
                   className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none focus:border-primary/40 appearance-none" disabled={submitting}>
                   <option value="">Select volunteer...</option>
@@ -272,12 +268,22 @@ function DeployMissionModal({ onClose, onSuccess }: { onClose: () => void; onSuc
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Due Date / Time</label>
+                <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Due Date / Time</label>
                 <input type="datetime-local" value={form.due_date} onChange={e => setForm(f => ({ ...f, due_date: e.target.value }))}
                   className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none focus:border-primary/40 transition-colors" disabled={submitting} />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Initial Status</label>
+                <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Priority</label>
+                <select value={form.priority} onChange={e => setForm(f => ({ ...f, priority: e.target.value as Task["priority"] }))}
+                  className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none appearance-none" disabled={submitting}>
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                  <option value="critical">Critical</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Initial Status</label>
                 <select value={form.status} onChange={e => setForm(f => ({ ...f, status: e.target.value as Task["status"] }))}
                   className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none appearance-none" disabled={submitting}>
                   <option value="assigned">Assigned</option>
@@ -325,25 +331,25 @@ function ViewDrawer({ task, onClose }: { task: Task; onClose: () => void }) {
         </div>
         <div className="p-6 space-y-6">
           <div className="flex flex-wrap gap-2">
-            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase border ${sc.bg} ${sc.text} ${sc.border}`}>
+            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-black uppercase border ${sc.bg} ${sc.text} ${sc.border}`}>
               <span className={`w-1.5 h-1.5 rounded-full ${sc.dot}`} />{sc.label}
             </span>
-            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase border ${cc.bg} ${cc.text} ${cc.border}`}>{cat}</span>
-            {overdue && <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase bg-red-500/15 text-red-400 border border-red-500/30">OVERDUE</span>}
+            <span className={`px-3 py-1 rounded-full text-sm font-black uppercase border ${cc.bg} ${cc.text} ${cc.border}`}>{cat}</span>
+            {overdue && <span className="px-3 py-1 rounded-full text-sm font-black uppercase bg-red-500/15 text-red-400 border border-red-500/30">OVERDUE</span>}
           </div>
           <div>
-            <p className="text-[10px] font-mono text-primary mb-1">#RC-{String(task.id).padStart(4, "0")}</p>
+            <p className="text-sm font-mono text-primary mb-1">#RC-{String(task.id).padStart(4, "0")}</p>
             <h3 className="text-xl font-black text-white leading-tight">{task.title}</h3>
           </div>
           {task.description && (
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-2">Description</p>
+              <p className="text-sm font-black uppercase tracking-widest text-on-surface-variant mb-2">Description</p>
               <p className="text-sm text-on-surface-variant leading-relaxed">{task.description}</p>
             </div>
           )}
           {task.proof_url && (
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-2">Proof / Evidence</p>
+              <p className="text-sm font-black uppercase tracking-widest text-on-surface-variant mb-2">Proof / Evidence</p>
               <a href={task.proof_url} target="_blank" rel="noreferrer"
                 className="flex items-center gap-2 text-xs font-bold text-green-400 hover:underline">
                 <span className="material-symbols-outlined text-sm">attachment</span>View Submitted Evidence
@@ -360,7 +366,7 @@ function ViewDrawer({ task, onClose }: { task: Task; onClose: () => void }) {
               { label: "Created",      value: timeAgo(task.created_at) },
             ].map(item => (
               <div key={item.label} className="px-4 py-3 flex justify-between items-center bg-surface-container-low">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">{item.label}</span>
+                <span className="text-sm font-bold uppercase tracking-widest text-on-surface-variant">{item.label}</span>
                 <span className="text-xs font-bold text-white max-w-[60%] text-right truncate">{item.value}</span>
               </div>
             ))}
@@ -379,9 +385,9 @@ function EditTaskModal({ task, onClose, onSuccess }: { task: Task; onClose: () =
     title: task.title,
     description: task.description || "",
     disaster_id: task.disaster_id ? String(task.disaster_id) : "",
-    volunteer_id: task.volunteer_id ? String(task.volunteer_id) : "",
     due_date: task.due_date ? task.due_date.slice(0, 16) : "",
     status: task.status,
+    priority: task.priority || "medium",
   });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError]           = useState("");
@@ -410,6 +416,7 @@ function EditTaskModal({ task, onClose, onSuccess }: { task: Task; onClose: () =
           volunteer_id: form.volunteer_id ? Number(form.volunteer_id) : undefined,
           due_date: form.due_date || undefined,
           status: form.status,
+          priority: form.priority,
         }),
       });
       setSuccess(true);
@@ -426,7 +433,7 @@ function EditTaskModal({ task, onClose, onSuccess }: { task: Task; onClose: () =
         <div className="px-8 py-5 border-b border-outline-variant/10 flex items-center justify-between sticky top-0 bg-[#0e1420] z-10" style={{ background: "linear-gradient(135deg, rgba(229,62,62,0.06), #0e1420)" }}>
           <div>
             <h2 className="text-sm font-black text-white uppercase tracking-tight">Edit Mission</h2>
-            <p className="text-[10px] text-on-surface-variant">#RC-{String(task.id).padStart(4, "0")}</p>
+            <p className="text-sm text-on-surface-variant">#RC-{String(task.id).padStart(4, "0")}</p>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-white transition-colors">
             <span className="material-symbols-outlined text-sm">close</span>
@@ -443,18 +450,18 @@ function EditTaskModal({ task, onClose, onSuccess }: { task: Task; onClose: () =
         ) : (
           <form onSubmit={handleSubmit} className="px-8 py-6 space-y-4">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Mission Title <span className="text-error">*</span></label>
+              <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Mission Title <span className="text-error">*</span></label>
               <input required value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
                 className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 transition-colors" disabled={submitting} />
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Description</label>
+              <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Description</label>
               <textarea rows={2} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
                 className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 resize-none transition-colors" disabled={submitting} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Disaster Zone</label>
+                <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Disaster Zone</label>
                 <select value={form.disaster_id} onChange={e => setForm(f => ({ ...f, disaster_id: e.target.value }))}
                   className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none appearance-none" disabled={submitting}>
                   <option value="">Select disaster...</option>
@@ -462,7 +469,7 @@ function EditTaskModal({ task, onClose, onSuccess }: { task: Task; onClose: () =
                 </select>
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Volunteer</label>
+                <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Volunteer</label>
                 <select value={form.volunteer_id} onChange={e => setForm(f => ({ ...f, volunteer_id: e.target.value }))}
                   className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none appearance-none" disabled={submitting}>
                   <option value="">Unassigned</option>
@@ -472,12 +479,22 @@ function EditTaskModal({ task, onClose, onSuccess }: { task: Task; onClose: () =
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Due Date</label>
+                <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Due Date</label>
                 <input type="datetime-local" value={form.due_date} onChange={e => setForm(f => ({ ...f, due_date: e.target.value }))}
                   className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none transition-colors" disabled={submitting} />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Status</label>
+                <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Priority</label>
+                <select value={form.priority} onChange={e => setForm(f => ({ ...f, priority: e.target.value as Task["priority"] }))}
+                  className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none appearance-none" disabled={submitting}>
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                  <option value="critical">Critical</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Status</label>
                 <select value={form.status} onChange={e => setForm(f => ({ ...f, status: e.target.value as Task["status"] }))}
                   className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none appearance-none" disabled={submitting}>
                   <option value="assigned">Assigned</option>
@@ -552,7 +569,7 @@ function EmergencyAssignModal({ task, onClose, onSuccess }: { task: Task; onClos
           <span className="material-symbols-outlined text-red-400 animate-pulse" style={{ fontVariationSettings: '"FILL" 1' }}>priority_high</span>
           <div>
             <h2 className="text-sm font-black text-red-400 uppercase tracking-tight">Emergency Assign</h2>
-            <p className="text-[10px] text-on-surface-variant">#RC-{String(task.id).padStart(4, "0")} · {task.title}</p>
+            <p className="text-sm text-on-surface-variant">#RC-{String(task.id).padStart(4, "0")} · {task.title}</p>
           </div>
           <button onClick={onClose} className="ml-auto w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-white transition-colors">
             <span className="material-symbols-outlined text-sm">close</span>
@@ -573,7 +590,7 @@ function EmergencyAssignModal({ task, onClose, onSuccess }: { task: Task; onClos
               <p className="text-xs text-red-400 font-bold leading-relaxed">This task is CRITICAL and unassigned. Dispatch an available operative immediately.</p>
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Select Available Operative</label>
+              <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Select Available Operative</label>
               {volunteers.length === 0 ? (
                 <p className="text-xs text-on-surface-variant italic py-2">No available volunteers at this time.</p>
               ) : (
@@ -745,7 +762,7 @@ export default function AdminTasksPage() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
-              <p className="text-primary font-black uppercase tracking-widest text-[10px] mb-1">MISSION CONTROL SYSTEM</p>
+              <p className="text-primary font-black uppercase tracking-widest text-sm mb-1">MISSION CONTROL SYSTEM</p>
               <h1 className="text-4xl font-black tracking-tight uppercase font-['Space_Grotesk'] text-white">Task Management</h1>
               <p className="text-on-surface-variant text-sm mt-1 max-w-xl">Deploy, monitor, and manage all field operations across active disaster zones.</p>
             </div>
@@ -768,8 +785,8 @@ export default function AdminTasksPage() {
               <div key={s.label} className="bg-surface-container-low p-5 rounded-xl border-l-4 relative overflow-hidden"
                 style={{ borderLeftColor: s.color }}>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant">{s.label}</span>
-                  <span className="text-[9px] font-black px-2 py-0.5 rounded" style={{ color: s.color, background: `${s.color}18` }}>{s.badge}</span>
+                  <span className="text-xs font-black uppercase tracking-widest text-on-surface-variant">{s.label}</span>
+                  <span className="text-xs font-black px-2 py-0.5 rounded" style={{ color: s.color, background: `${s.color}18` }}>{s.badge}</span>
                 </div>
                 <span className="text-3xl font-black text-white font-['Space_Grotesk']">{loading ? "—" : s.value.toLocaleString()}</span>
                 <div className="absolute -bottom-2 -right-2 opacity-5">
@@ -832,18 +849,18 @@ export default function AdminTasksPage() {
                 {showDatePicker && (
                   <div className="absolute top-full right-0 mt-1 z-20 bg-[#0e1420] border border-outline-variant/20 rounded-xl shadow-2xl p-4 space-y-3 min-w-[260px]">
                     <div className="space-y-1">
-                      <label className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant">From</label>
+                      <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant">From</label>
                       <input type="date" value={dateFrom} onChange={e => { setDateFrom(e.target.value); setPage(1); }}
                         className="w-full px-3 py-2 rounded-lg bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none focus:border-primary/40" />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant">To</label>
+                      <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant">To</label>
                       <input type="date" value={dateTo} onChange={e => { setDateTo(e.target.value); setPage(1); }}
                         className="w-full px-3 py-2 rounded-lg bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none focus:border-primary/40" />
                     </div>
                     <div className="flex gap-2">
-                      <button onClick={() => { setDateFrom(""); setDateTo(""); setPage(1); }} className="flex-1 py-2 text-[10px] font-black uppercase tracking-widest text-on-surface-variant border border-outline-variant/20 rounded-lg hover:bg-surface-container transition-all">Clear</button>
-                      <button onClick={() => setShowDatePicker(false)} className="flex-1 py-2 text-[10px] font-black uppercase tracking-widest text-white rounded-lg transition-all" style={{ background: "linear-gradient(135deg, #E53E3E, #ff6b35)" }}>Apply</button>
+                      <button onClick={() => { setDateFrom(""); setDateTo(""); setPage(1); }} className="flex-1 py-2 text-sm font-black uppercase tracking-widest text-on-surface-variant border border-outline-variant/20 rounded-lg hover:bg-surface-container transition-all">Clear</button>
+                      <button onClick={() => setShowDatePicker(false)} className="flex-1 py-2 text-sm font-black uppercase tracking-widest text-white rounded-lg transition-all" style={{ background: "linear-gradient(135deg, #E53E3E, #ff6b35)" }}>Apply</button>
                     </div>
                   </div>
                 )}
@@ -862,8 +879,8 @@ export default function AdminTasksPage() {
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-surface-container border-b border-outline-variant/10">
-                    {["Mission ID", "Mission Title", "Category", "Assigned To", "Disaster Zone", "Status", "Due Date", "Actions"].map((h, i) => (
-                      <th key={h} className={`px-5 py-4 text-[9px] font-black uppercase tracking-widest text-on-surface-variant ${i === 7 ? "text-right" : ""}`}>{h}</th>
+                    {["Mission ID", "Mission Title", "Category", "Priority", "Assigned To", "Disaster Zone", "Status", "Due Date", "Actions"].map((h, i) => (
+                      <th key={h} className={`px-5 py-4 text-xs font-black uppercase tracking-widest text-on-surface-variant ${i === 8 ? "text-right" : ""}`}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -902,14 +919,27 @@ export default function AdminTasksPage() {
                           {/* Title */}
                           <td className="px-5 py-4">
                             <p className="text-sm font-bold text-white leading-tight">{t.title}</p>
-                            {t.description && <p className="text-[10px] text-on-surface-variant truncate max-w-[200px] mt-0.5">{t.description}</p>}
-                            {isEmergency && !t.volunteer_id && <p className="text-[9px] text-red-400 font-black uppercase tracking-widest mt-1">⚡ CRITICAL — UNASSIGNED</p>}
+                            {t.description && <p className="text-sm text-on-surface-variant truncate max-w-[200px] mt-0.5">{t.description}</p>}
+                            {isEmergency && !t.volunteer_id && <p className="text-xs text-red-400 font-black uppercase tracking-widest mt-1">⚡ CRITICAL — UNASSIGNED</p>}
                           </td>
 
                           {/* Category */}
                           <td className="px-5 py-4">
-                            <span className={`text-[9px] font-black px-2.5 py-1 rounded uppercase tracking-widest border ${cc.bg} ${cc.text} ${cc.border}`}>
+                            <span className={`text-xs font-black px-2.5 py-1 rounded uppercase tracking-widest border ${cc.bg} ${cc.text} ${cc.border}`}>
                               {cat.replace("_", " ")}
+                            </span>
+                          </td>
+
+                          {/* Priority */}
+                          <td className="px-5 py-4">
+                            <span className={`px-2 py-1 rounded text-xs font-bold uppercase tracking-widest
+                              ${t.priority === 'critical' ? 'bg-error/20 text-error border border-error/30' :
+                                t.priority === 'high' ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30' :
+                                t.priority === 'low' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/30' :
+                                'bg-surface-container-high text-on-surface-variant border border-outline-variant/20'
+                              }
+                            `}>
+                              {t.priority || "Medium"}
                             </span>
                           </td>
 
@@ -941,7 +971,7 @@ export default function AdminTasksPage() {
                               <span className={`w-1.5 h-1.5 rounded-full ${sc.dot}`} />
                               <span className={`text-xs font-bold ${sc.text}`}>{sc.label}</span>
                             </div>
-                            {overdue && <p className="text-[9px] text-red-400 font-black uppercase mt-0.5">OVERDUE</p>}
+                            {overdue && <p className="text-xs text-red-400 font-black uppercase mt-0.5">OVERDUE</p>}
                           </td>
 
                           {/* Due Date */}
@@ -959,7 +989,7 @@ export default function AdminTasksPage() {
                             <div className="flex justify-end gap-1">
                               {isEmergency ? (
                                 <button onClick={() => setEmergencyAssignTask(t)}
-                                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-[9px] font-black uppercase tracking-widest transition-all active:scale-95">
+                                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-black uppercase tracking-widest transition-all active:scale-95">
                                   <span className="material-symbols-outlined text-sm">flash_on</span>
                                   <span className="hidden sm:inline">Emergency Assign</span>
                                 </button>
@@ -999,11 +1029,11 @@ export default function AdminTasksPage() {
                   { label: "Overdue",        value: stats.overdue.toString(),            color: "text-red-400"     },
                 ].map(s => (
                   <div key={s.label}>
-                    <p className="text-[9px] uppercase tracking-widest text-on-surface-variant font-black">{s.label}</p>
+                    <p className="text-xs uppercase tracking-widest text-on-surface-variant font-black">{s.label}</p>
                     <p className={`text-base font-black font-['Space_Grotesk'] ${s.color}`}>{loading ? "—" : s.value}</p>
                   </div>
                 ))}
-                <span className="text-[10px] font-bold text-on-surface-variant self-end mb-0.5 uppercase tracking-widest">
+                <span className="text-sm font-bold text-on-surface-variant self-end mb-0.5 uppercase tracking-widest">
                   Showing {filtered.length === 0 ? 0 : (page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length}
                 </span>
               </div>

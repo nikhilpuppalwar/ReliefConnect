@@ -45,6 +45,10 @@ router.post(
       .optional()
       .isIn(["assigned", "in_progress", "completed", "cancelled"])
       .withMessage("status must be one of: assigned, in_progress, completed, cancelled"),
+    body("priority")
+      .optional()
+      .isIn(["low", "medium", "high", "critical"])
+      .withMessage("priority must be one of: low, medium, high, critical"),
   ],
   validate,
   createTask
@@ -75,9 +79,9 @@ router.put(
   "/:id/status",
   auth,
   role(["volunteer", "admin"]),
+  upload.single("proof"),
   [param("id").isInt({ min: 1 }), body("status").isIn(["assigned", "in_progress", "completed", "cancelled"])],
   validate,
-  upload.single("proof"),
   updateTaskStatus
 );
 

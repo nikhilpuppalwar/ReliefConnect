@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState, useMemo, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import AdminNavLinks from "@/components/AdminNavLinks";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { fetchApi } from "@/lib/api";
 
@@ -74,28 +75,19 @@ function AdminNav({ active }: { active?: string }) {
           </div>
           <div>
             <span className="text-xl font-black text-[#E53E3E] font-['Space_Grotesk'] tracking-tighter uppercase block leading-none">ReliefConnect</span>
-            <span className="text-[9px] font-black text-on-surface-variant uppercase tracking-[0.15em]">Command Center</span>
+            <span className="text-xs font-black text-on-surface-variant uppercase tracking-[0.15em]">Command Center</span>
           </div>
         </div>
 
         {/* Nav links */}
-        <nav className="hidden xl:flex items-center gap-1 flex-1 justify-center">
-          {links.map(link => (
-            <button key={link.label} onClick={() => router.push(link.href)}
-              className={`px-3 py-2 font-black text-[10px] tracking-[0.12em] uppercase transition-all rounded-lg hover:text-primary hover:bg-primary/5 ${
-                (active || link.href) === link.href ? "text-primary border-b-2 border-primary" : "text-on-surface/60"
-              }`}>
-              {link.label}
-            </button>
-          ))}
-        </nav>
+        <AdminNavLinks />
 
         {/* Right actions */}
         <div className="flex items-center gap-3 shrink-0">
           <button onClick={() => router.push("/admin")}
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-white font-black text-[10px] uppercase tracking-widest rounded-xl shadow-[0_4px_16px_rgba(229,62,62,0.3)] hover:brightness-110 active:scale-95 transition-all">
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-white font-black text-sm uppercase tracking-widest rounded-xl shadow-[0_4px_16px_rgba(229,62,62,0.3)] hover:brightness-110 active:scale-95 transition-all">
             <span className="material-symbols-outlined text-sm">add_circle</span>
-            <span className="hidden sm:inline">New Dispatch</span>
+            <span className="hidden 2xl:inline">New Dispatch</span><span className="hidden lg:inline 2xl:hidden">Dispatch</span>
           </button>
 
           <div className="h-8 w-px bg-[#ffb3ad]/10" />
@@ -109,8 +101,8 @@ function AdminNav({ active }: { active?: string }) {
             <button onClick={() => setProfileOpen(!profileOpen)}
               className="flex items-center gap-2.5 hover:opacity-90 transition-opacity">
               <div className="text-right hidden sm:block">
-                <p className="text-[10px] font-black text-[#ffb3ad] leading-none">{user?.name?.toUpperCase() || "ADMIN"}</p>
-                <p className="text-[9px] text-on-surface-variant tracking-wider">Global Overseer</p>
+                <p className="text-sm font-black text-[#ffb3ad] leading-none">{user?.name?.toUpperCase() || "ADMIN"}</p>
+                <p className="text-xs text-on-surface-variant tracking-wider">Global Overseer</p>
               </div>
               <div className="w-9 h-9 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary font-black text-sm">
                 {user?.avatar_url
@@ -124,7 +116,7 @@ function AdminNav({ active }: { active?: string }) {
                 onClick={e => e.stopPropagation()}>
                 <div className="px-5 py-4 border-b border-[#ffb3ad]/10">
                   <p className="text-sm font-black text-white">{user?.name || "Admin"}</p>
-                  <p className="text-[10px] text-[#ffb3ad] font-bold uppercase tracking-widest">Global Overseer</p>
+                  <p className="text-sm text-[#ffb3ad] font-bold uppercase tracking-widest">Global Overseer</p>
                 </div>
                 <div className="px-2 py-2 space-y-1">
                   {[
@@ -157,28 +149,45 @@ function AdminNav({ active }: { active?: string }) {
 // ─── Report Incident Modal ────────────────────────────────────────────────────
 function ReportModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: () => void }) {
   const [form, setForm] = useState({
-    title: "", description: "", type: "Flood",
+    title: "", description: "", type: "flood",
     severity: "high" as "low" | "medium" | "high" | "critical",
     location: "", status: "active" as "active" | "monitoring" | "resolved",
+    latitude: "", longitude: ""
   });
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
+  const firstPreview = useMemo(() => {
+    if (!mediaFiles.length) return "";
+    return URL.createObjectURL(mediaFiles[0]);
+  }, [mediaFiles]);
+
+  const addFiles = (incoming: FileList | null) => {
+    if (!incoming) return;
+    const next = Array.from(incoming).filter((f) => f.size <= 25 * 1024 * 1024);
+    setMediaFiles((prev) => [...prev, ...next]);
+  };
+
+  const removeFile = (index: number) => {
+    setMediaFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!form.title || !form.description) { setError("Title and description are required."); return; }
-    setSubmitting(true); setError("");
+    setError("");
+    if (form.title.trim().length < 10) return setError("Disaster title must be at least 10 characters.");
+    if (form.description.trim().length < 20) return setError("Description must be at least 20 characters.");
+    if (!form.location.trim()) return setError("Location is required.");
+
+    setSubmitting(true);
     try {
       const formData = new FormData();
       Object.entries(form).forEach(([key, value]) => formData.append(key, value as string));
       mediaFiles.forEach(file => formData.append("media", file));
 
-      await fetchApi("/disasters", {
-        method: "POST",
-        body: formData,
-      });
+      await fetchApi("/disasters", { method: "POST", body: formData });
       setSuccess(true);
       setTimeout(() => { onSuccess(); onClose(); }, 1500);
     } catch (err: any) {
@@ -189,145 +198,204 @@ function ReportModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: (
   }
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4" onClick={() => !submitting && onClose()}>
-      <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" />
-      <div className="relative z-10 w-full max-w-2xl bg-[#0e1420] border border-[#ffb3ad]/20 rounded-2xl shadow-[0_0_80px_rgba(0,0,0,0.8)] overflow-hidden max-h-[90vh] overflow-y-auto"
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => !submitting && onClose()}>
+      <div className="relative w-full max-w-6xl max-h-[95vh] overflow-y-auto bg-[#0b0f16] border border-outline-variant/10 rounded-2xl shadow-[0_0_80px_rgba(0,0,0,0.8)] flex flex-col"
         onClick={e => e.stopPropagation()}>
+        
         {/* Header */}
-        <div className="px-8 py-6 border-b border-[#ffb3ad]/10 flex items-center justify-between sticky top-0 bg-[#0e1420] z-10"
-          style={{ background: "linear-gradient(135deg, rgba(229,62,62,0.08) 0%, #0e1420 60%)" }}>
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-xl bg-primary/15 border border-primary/30 flex items-center justify-center">
-              <span className="material-symbols-outlined text-primary text-xl" style={{ fontVariationSettings: '"FILL" 1' }}>add_location_alt</span>
-            </div>
+        <div className="sticky top-0 z-10 px-8 py-5 border-b border-[#ffb3ad]/10 bg-[#0b0f16]"
+          style={{ background: "linear-gradient(135deg, rgba(229,62,62,0.1), #0b0f16 100%)" }}>
+          <div className="flex justify-between items-start">
             <div>
-              <h2 className="text-base font-black text-white uppercase tracking-tight font-['Space_Grotesk']">Report Incident</h2>
-              <p className="text-[10px] text-[#ffb3ad]/60">Log a new disaster or emergency event</p>
+              <h1 className="font-headline font-extrabold text-3xl tracking-tighter text-on-background uppercase">INCIDENT DISPATCH</h1>
+              <p className="font-body text-outline uppercase tracking-widest text-xs opacity-80 mt-1">Admin Command Center • Real-time Uplink</p>
             </div>
+            <button onClick={onClose} disabled={submitting}
+              className="w-10 h-10 rounded-full bg-surface-container hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-white transition-colors border border-outline-variant/10">
+              <span className="material-symbols-outlined text-sm">close</span>
+            </button>
           </div>
-          <button onClick={onClose} disabled={submitting}
-            className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-white transition-colors">
-            <span className="material-symbols-outlined text-sm">close</span>
-          </button>
         </div>
 
-        {success ? (
-          <div className="px-8 py-16 flex flex-col items-center gap-4 text-center">
-            <div className="w-16 h-16 rounded-full bg-green-500/15 border border-green-500/30 flex items-center justify-center">
-              <span className="material-symbols-outlined text-3xl text-green-400" style={{ fontVariationSettings: '"FILL" 1' }}>check_circle</span>
-            </div>
-            <p className="text-lg font-black text-white uppercase">Incident Reported!</p>
-            <p className="text-sm text-on-surface-variant">The disaster has been logged to the database.</p>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="px-8 py-6 space-y-5">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-[#ffb3ad]/70">Title <span className="text-error">*</span></label>
-              <input required type="text" value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
-                placeholder="E.g. Western Valley Flash Flood"
-                className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 transition-colors"
-                disabled={submitting} />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-[#ffb3ad]/70">Description <span className="text-error">*</span></label>
-              <textarea required rows={3} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-                placeholder="Detailed description of the incident, affected areas, and immediate threats..."
-                className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 resize-none transition-colors"
-                disabled={submitting} />
-            </div>
-
-            <div className="grid grid-cols-2 gap-5">
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-[#ffb3ad]/70">Disaster Type</label>
-                <select value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value }))}
-                  className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none focus:border-primary/40 transition-colors appearance-none"
-                  disabled={submitting}>
-                  {["Flood", "Wildfire", "Earthquake", "Storm", "Cyclone", "Drought", "Tsunami", "Landslide", "Volcanic", "Collapse", "Other"].map(t => (
-                    <option key={t} value={t}>{t}</option>
-                  ))}
-                </select>
+        {/* Content */}
+        <div className="px-8 py-8">
+          {success ? (
+            <div className="py-24 flex flex-col items-center justify-center gap-4 text-center">
+              <div className="w-20 h-20 rounded-full bg-green-500/15 border border-green-500/30 flex items-center justify-center mb-2">
+                <span className="material-symbols-outlined text-4xl text-green-400" style={{ fontVariationSettings: '"FILL" 1' }}>check_circle</span>
               </div>
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-[#ffb3ad]/70">Location</label>
-                <input type="text" value={form.location} onChange={e => setForm(f => ({ ...f, location: e.target.value }))}
-                  placeholder="City, Region, Country"
-                  className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white placeholder-on-surface-variant/40 focus:outline-none focus:border-primary/40 transition-colors"
-                  disabled={submitting} />
+              <p className="text-2xl font-black text-white uppercase tracking-tight">Incident Reported Successfully!</p>
+              <p className="text-sm text-on-surface-variant max-w-md">The disaster has been securely logged to the centralized database and dispatched across civilian interfaces.</p>
+            </div>
+          ) : (
+            <form className="grid grid-cols-1 lg:grid-cols-10 gap-8 items-start" onSubmit={handleSubmit}>
+              
+              <div className="lg:col-span-7 space-y-8">
+                {error && <div className="p-4 bg-error/10 border border-error/30 rounded-xl text-error text-sm font-bold flex items-center gap-3"><span className="material-symbols-outlined">error</span> {error}</div>}
+                
+                {/* Basic Incident Data */}
+                <section className="bg-surface-container-low rounded-xl p-8 border-l-4 border-primary shadow-lg">
+                  <div className="flex items-center gap-3 mb-6">
+                    <span className="material-symbols-outlined text-primary">assignment_late</span>
+                    <h2 className="font-headline text-xl font-bold tracking-tight text-on-surface uppercase">Basic Incident Data</h2>
+                  </div>
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-xs font-label uppercase text-outline mb-2 tracking-widest">Disaster Title *</label>
+                      <input className="w-full bg-surface-container-lowest border-0 border-b border-outline-variant/30 py-3 px-0 text-on-surface focus:outline-none focus:border-primary transition-colors" 
+                        placeholder="Briefly describe the emergency (min 10 chars)" type="text" value={form.title} onChange={(e) => setForm(f => ({ ...f, title: e.target.value }))} disabled={submitting} />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-xs font-label uppercase text-outline mb-2 tracking-widest">Disaster Type *</label>
+                        <select className="w-full bg-surface-container-lowest border-0 border-b border-outline-variant/30 py-3 px-0 text-on-surface appearance-none focus:outline-none focus:border-primary transition-colors uppercase text-sm" 
+                          value={form.type} onChange={(e) => setForm(f => ({ ...f, type: e.target.value }))} disabled={submitting}>
+                          {["flood", "earthquake", "fire", "cyclone", "landslide", "storm", "tsunami", "volcanic", "drought", "other"].map(t => <option key={t} value={t}>{t}</option>)}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-label uppercase text-outline mb-2 tracking-widest">Severity Level *</label>
+                        <select className="w-full bg-surface-container-lowest border-0 border-b border-outline-variant/30 py-3 px-0 text-on-surface appearance-none focus:outline-none focus:border-primary transition-colors uppercase text-sm" 
+                          value={form.severity} onChange={(e) => setForm(f => ({ ...f, severity: e.target.value as any }))} disabled={submitting}>
+                          {["low", "medium", "high", "critical"].map(s => <option key={s} value={s}>{s}</option>)}
+                        </select>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-label uppercase text-outline mb-2 tracking-widest">Detailed Description *</label>
+                      <textarea className="w-full bg-surface-container-lowest border-0 border-b border-outline-variant/30 py-3 px-0 text-on-surface resize-none focus:outline-none focus:border-primary transition-colors" 
+                        placeholder="Provide as much tactical detail as possible... (min 20 chars)" rows={4} value={form.description} onChange={(e) => setForm(f => ({ ...f, description: e.target.value }))} disabled={submitting} />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-label uppercase text-outline mb-2 tracking-widest">Initial Status</label>
+                      <select className="w-full bg-surface-container-lowest border-0 border-b border-outline-variant/30 py-3 px-0 text-on-surface appearance-none focus:outline-none focus:border-primary transition-colors uppercase text-sm" 
+                        value={form.status} onChange={(e) => setForm(f => ({ ...f, status: e.target.value as any }))} disabled={submitting}>
+                        {["active", "monitoring", "resolved"].map(s => <option key={s} value={s}>{s}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                </section>
+
+                {/* Geospatial Variables */}
+                <section className="bg-surface-container-low rounded-xl p-8 border-l-4 border-outline shadow-lg">
+                  <div className="flex items-center gap-3 mb-6">
+                    <span className="material-symbols-outlined text-outline">location_on</span>
+                    <h2 className="font-headline text-xl font-bold tracking-tight text-on-surface uppercase">Geospatial Coordinates</h2>
+                  </div>
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-xs font-label uppercase text-outline mb-2 tracking-widest">Location Name *</label>
+                      <input className="w-full bg-surface-container-lowest border-0 border-b border-outline-variant/30 py-3 px-0 text-on-surface focus:outline-none focus:border-primary transition-colors" 
+                        placeholder="Intersection, Landmark, or District" type="text" value={form.location} onChange={(e) => setForm(f => ({ ...f, location: e.target.value }))} disabled={submitting} />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-xs font-label uppercase text-outline mb-2 tracking-widest">Latitude</label>
+                        <input className="w-full bg-surface-container-lowest border-0 border-b border-outline-variant/30 py-3 px-0 text-on-surface focus:outline-none focus:border-primary transition-colors font-mono" 
+                          placeholder="E.g. 34.0522" type="text" value={form.latitude} onChange={(e) => setForm(f => ({ ...f, latitude: e.target.value }))} disabled={submitting} />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-label uppercase text-outline mb-2 tracking-widest">Longitude</label>
+                        <input className="w-full bg-surface-container-lowest border-0 border-b border-outline-variant/30 py-3 px-0 text-on-surface focus:outline-none focus:border-primary transition-colors font-mono" 
+                          placeholder="E.g. -118.2437" type="text" value={form.longitude} onChange={(e) => setForm(f => ({ ...f, longitude: e.target.value }))} disabled={submitting} />
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                {/* Visual Intelligence */}
+                <section className="bg-surface-container-low rounded-xl p-8 border-l-4 border-outline-variant shadow-lg">
+                  <div className="flex items-center gap-3 mb-6">
+                    <span className="material-symbols-outlined text-outline-variant">cloud_upload</span>
+                    <h2 className="font-headline text-xl font-bold tracking-tight text-on-surface uppercase">Visual Intelligence</h2>
+                  </div>
+
+                  <label className="border-2 border-dashed border-outline-variant/40 rounded-xl p-8 text-center hover:border-primary/50 transition-colors cursor-pointer bg-surface-container-lowest block">
+                    <span className="material-symbols-outlined text-5xl text-outline/40 mb-2 block">add_photo_alternate</span>
+                    <p className="font-headline text-lg text-on-surface font-medium">Upload Photos / Videos</p>
+                    <p className="text-outline text-xs mt-2 uppercase tracking-widest">Max 25MB each • Submits securely to AWS S3 storage</p>
+                    <input accept=".jpg,.jpeg,.png,.mp4" className="hidden" multiple type="file" onChange={(e) => addFiles(e.target.files)} disabled={submitting} />
+                  </label>
+
+                  {mediaFiles.length > 0 && (
+                    <div className="grid grid-cols-3 md:grid-cols-5 gap-4 mt-6">
+                      {mediaFiles.map((file, idx) => (
+                        <div key={`${file.name}-${idx}`} className="aspect-square bg-surface-container-high rounded-xl overflow-hidden relative border border-outline-variant/20 shadow-md">
+                          <img className="w-full h-full object-cover" src={URL.createObjectURL(file)} alt={file.name} />
+                          <button className="absolute top-2 right-2 w-6 h-6 bg-black/60 hover:bg-error text-white flex items-center justify-center rounded-full transition-colors backdrop-blur-md"
+                            onClick={(e) => { e.preventDefault(); removeFile(idx); }} type="button">
+                            <span className="material-symbols-outlined text-[14px]">close</span>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </section>
+
+                <div className="pt-4">
+                  <button type="submit" disabled={submitting}
+                    className="w-full py-5 bg-gradient-to-r from-primary to-[#ff6b35] text-white font-headline font-black text-xl uppercase tracking-widest rounded-xl text-center disabled:opacity-60 transition-all active:scale-[0.98] shadow-[0_0_40px_rgba(229,62,62,0.2)] hover:shadow-[0_0_60px_rgba(229,62,62,0.4)]">
+                    {submitting ? "Transmitting Feed..." : "Deploy Disaster Report"}
+                  </button>
+                </div>
               </div>
-            </div>
 
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-[#ffb3ad]/70">Severity</label>
-              <div className="grid grid-cols-4 gap-2">
-                {(["low", "medium", "high", "critical"] as const).map(s => {
-                  const sc = SEVERITY_CONFIG[s];
-                  const active = form.severity === s;
-                  return (
-                    <button key={s} type="button" onClick={() => setForm(f => ({ ...f, severity: s }))} disabled={submitting}
-                      className={`py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all border ${active ? `${sc.bg} ${sc.text} ${sc.border}` : "bg-surface-container/50 text-on-surface-variant border-outline-variant/10"}`}>
-                      {s}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+              {/* Sidebar Preview */}
+              <aside className="lg:col-span-3 lg:sticky lg:top-28 space-y-6">
+                <div className="bg-surface-container rounded-xl overflow-hidden shadow-2xl border border-outline-variant/10">
+                  <div className="bg-surface-container-highest px-6 py-4 border-b border-outline-variant/20 flex flex-col items-center">
+                    <h3 className="font-headline font-bold text-sm tracking-widest text-on-surface uppercase text-center w-full">Live Monitor Preview</h3>
+                  </div>
+                  <div className="p-6 space-y-5">
+                    <div className="flex justify-between items-start">
+                      <span className={`px-2 py-0.5 rounded-sm uppercase font-bold text-[10px] tracking-widest 
+                          ${form.severity === 'critical' ? 'bg-red-500/20 text-red-500' : 
+                            form.severity === 'high' ? 'bg-orange-500/20 text-orange-500' :
+                            form.severity === 'medium' ? 'bg-yellow-500/20 text-yellow-500' :
+                            'bg-green-500/20 text-green-500'}`}>
+                        {form.severity.toUpperCase()} SEVERITY
+                      </span>
+                      <span className="text-[10px] text-outline font-mono flex items-center gap-1.5"><span className="w-1.5 h-1.5 bg-yellow-500 rounded-full inline-block animate-pulse"></span>DRAFT</span>
+                    </div>
+                    
+                    <h4 className="font-headline text-2xl font-black text-white leading-[1.1] uppercase tracking-tighter break-words">
+                      {form.title || "UNNAMED INCIDENT"}
+                    </h4>
+                    
+                    <div className="flex flex-wrap gap-2">
+                      <span className="bg-surface-container-high border border-outline-variant/10 text-on-surface-variant text-[10px] font-bold px-2.5 py-1 rounded-sm uppercase tracking-widest flex items-center gap-1">
+                        <span className="material-symbols-outlined text-[12px]">category</span>
+                        {form.type || "TYPE"}
+                      </span>
+                      <span className="bg-surface-container-high border border-outline-variant/10 text-on-surface-variant text-[10px] font-bold px-2.5 py-1 rounded-sm uppercase tracking-widest flex items-center gap-1">
+                        <span className="material-symbols-outlined text-[12px]">location_on</span>
+                        {(form.location && form.location.length > 15 ? form.location.substring(0,15)+"..." : form.location) || "LOCATION"}
+                      </span>
+                    </div>
 
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-[#ffb3ad]/70">Initial Status</label>
-              <div className="grid grid-cols-3 gap-2">
-                {(["active", "monitoring", "resolved"] as const).map(s => {
-                  const sc = STATUS_CONFIG[s];
-                  const active = form.status === s;
-                  return (
-                    <button key={s} type="button" onClick={() => setForm(f => ({ ...f, status: s }))} disabled={submitting}
-                      className={`py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all border ${active ? "bg-primary/15 text-primary border-primary/30" : "bg-surface-container/50 text-on-surface-variant border-outline-variant/10"}`}>
-                      {s}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+                    <div className="h-44 w-full bg-[#0b0f16] rounded-xl border border-outline-variant/15 overflow-hidden relative shadow-inner">
+                      {firstPreview ? (
+                        <img className="w-full h-full object-cover" src={firstPreview} alt="Live feed view" />
+                      ) : (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                          <span className="material-symbols-outlined text-outline-variant/40 text-4xl">satellite_alt</span>
+                          <span className="text-[10px] font-mono font-bold tracking-widest text-outline-variant/50 uppercase">AWAITING VISUALS</span>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="pt-2 border-t border-outline-variant/10">
+                      <p className="text-[11px] text-on-surface-variant italic leading-relaxed text-center">
+                        This view mimics how the incident will appear on civilian dashboards.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </aside>
 
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-[#ffb3ad]/70">Media / Images (Optional)</label>
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={e => setMediaFiles(Array.from(e.target.files || []))}
-                className="w-full text-sm text-on-surface-variant file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-primary/20 file:text-primary hover:file:bg-primary/30 file:transition-colors cursor-pointer"
-                disabled={submitting}
-              />
-               {mediaFiles.length > 0 && (
-                 <p className="text-[10px] text-on-surface-variant mt-1">{mediaFiles.length} file(s) selected.</p>
-               )}
-            </div>
-
-            {error && (
-              <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-error/10 border border-error/25">
-                <span className="material-symbols-outlined text-sm text-error">error</span>
-                <p className="text-sm text-error font-bold">{error}</p>
-              </div>
-            )}
-
-            <div className="flex gap-3 pt-1">
-              <button type="button" onClick={onClose} disabled={submitting}
-                className="flex-1 py-3 rounded-xl font-black text-xs uppercase tracking-widest border border-outline-variant/20 text-on-surface-variant hover:bg-surface-container transition-all">
-                Cancel
-              </button>
-              <button type="submit" disabled={submitting}
-                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm uppercase tracking-widest text-white disabled:opacity-60 transition-all active:scale-95"
-                style={{ background: "linear-gradient(135deg, #E53E3E, #ff6b35)" }}>
-                {submitting ? (
-                  <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Reporting...</>
-                ) : (
-                  <><span className="material-symbols-outlined text-sm">add_location_alt</span> Report Incident</>
-                )}
-              </button>
-            </div>
-          </form>
-        )}
+            </form>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -361,10 +429,10 @@ function ViewModal({ disaster, onClose }: { disaster: Disaster; onClose: () => v
         <div className="p-6 space-y-6">
           {/* Badges */}
           <div className="flex flex-wrap gap-2">
-            <span className={`px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${sc.bg} ${sc.text} ${sc.border}`}>
+            <span className={`px-3 py-1.5 rounded-full text-sm font-black uppercase tracking-widest border ${sc.bg} ${sc.text} ${sc.border}`}>
               {sc.label} Severity
             </span>
-            <span className="px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/10 flex items-center gap-1.5">
+            <span className="px-3 py-1.5 rounded-full text-sm font-black uppercase tracking-widest border border-white/10 flex items-center gap-1.5">
               <span className={`w-1.5 h-1.5 rounded-full ${stc.dot}`} />
               <span className={stc.text}>{stc.label}</span>
             </span>
@@ -372,14 +440,14 @@ function ViewModal({ disaster, onClose }: { disaster: Disaster; onClose: () => v
 
           {/* Title */}
           <div>
-            <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-1">Disaster ID</p>
-            <p className="text-[10px] font-mono text-primary mb-3">#DIS-{String(disaster.id).padStart(4, "0")}</p>
+            <p className="text-sm font-black uppercase tracking-widest text-on-surface-variant mb-1">Disaster ID</p>
+            <p className="text-sm font-mono text-primary mb-3">#DIS-{String(disaster.id).padStart(4, "0")}</p>
             <h3 className="text-xl font-black text-white leading-tight">{disaster.title}</h3>
           </div>
 
           {/* Description */}
           <div>
-            <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-2">Description</p>
+            <p className="text-sm font-black uppercase tracking-widest text-on-surface-variant mb-2">Description</p>
             <p className="text-sm text-on-surface-variant leading-relaxed">{disaster.description || "No description provided."}</p>
           </div>
 
@@ -393,7 +461,7 @@ function ViewModal({ disaster, onClose }: { disaster: Disaster; onClose: () => v
               { label: "Last Updated", value: new Date(disaster.updated_at).toLocaleString() },
             ].map(item => (
               <div key={item.label} className="px-4 py-3 flex justify-between items-center bg-surface-container-low">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">{item.label}</span>
+                <span className="text-sm font-bold uppercase tracking-widest text-on-surface-variant">{item.label}</span>
                 <span className="text-xs font-bold text-white max-w-[60%] text-right">{item.value}</span>
               </div>
             ))}
@@ -402,7 +470,7 @@ function ViewModal({ disaster, onClose }: { disaster: Disaster; onClose: () => v
           {/* Media */}
           {details?.media && details.media.length > 0 && (
             <div>
-              <p className="text-[10px] font-black uppercase tracking-widest text-[#ffb3ad]/70 mb-2">Attached Media</p>
+              <p className="text-sm font-black uppercase tracking-widest text-[#ffb3ad]/70 mb-2">Attached Media</p>
               <div className="grid grid-cols-2 gap-3">
                 {details.media.map((img: any) => (
                   <a key={img.id} href={img.media_url} target="_blank" rel="noreferrer" className="block outline-none hover:scale-105 transition-transform">
@@ -457,7 +525,7 @@ function EditModal({ disaster, onClose, onSuccess }: { disaster: Disaster; onClo
         <div className="px-8 py-5 border-b border-outline-variant/10 flex items-center justify-between sticky top-0 bg-[#0e1420] z-10">
           <div>
             <h2 className="text-sm font-black text-white uppercase tracking-tight">Edit Incident</h2>
-            <p className="text-[10px] text-on-surface-variant">#{String(disaster.id).padStart(4, "0")} · {disaster.title}</p>
+            <p className="text-sm text-on-surface-variant">#{String(disaster.id).padStart(4, "0")} · {disaster.title}</p>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-white transition-colors">
             <span className="material-symbols-outlined text-sm">close</span>
@@ -474,18 +542,18 @@ function EditModal({ disaster, onClose, onSuccess }: { disaster: Disaster; onClo
         ) : (
           <form onSubmit={handleSave} className="px-8 py-6 space-y-4">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Title</label>
+              <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Title</label>
               <input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
                 className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none focus:border-primary/40 transition-colors" />
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Description</label>
+              <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Description</label>
               <textarea rows={3} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
                 className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none focus:border-primary/40 resize-none transition-colors" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Type</label>
+                <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Type</label>
                 <select value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value }))}
                   className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none appearance-none">
                   {["Flood", "Wildfire", "Earthquake", "Storm", "Cyclone", "Drought", "Tsunami", "Landslide", "Volcanic", "Collapse", "Other"].map(t => (
@@ -494,19 +562,19 @@ function EditModal({ disaster, onClose, onSuccess }: { disaster: Disaster; onClo
                 </select>
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Location</label>
+                <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Location</label>
                 <input value={form.location} onChange={e => setForm(f => ({ ...f, location: e.target.value }))}
                   className="w-full px-4 py-3 rounded-xl bg-surface-container border border-outline-variant/15 text-sm text-white focus:outline-none focus:border-primary/40 transition-colors" />
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Severity</label>
+              <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Severity</label>
               <div className="grid grid-cols-4 gap-2">
                 {(["low", "medium", "high", "critical"] as const).map(s => {
                   const sc = SEVERITY_CONFIG[s];
                   return (
                     <button key={s} type="button" onClick={() => setForm(f => ({ ...f, severity: s }))}
-                      className={`py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${form.severity === s ? `${sc.bg} ${sc.text} ${sc.border}` : "bg-surface-container/50 text-on-surface-variant border-outline-variant/10"}`}>
+                      className={`py-2 rounded-xl text-sm font-black uppercase tracking-widest transition-all border ${form.severity === s ? `${sc.bg} ${sc.text} ${sc.border}` : "bg-surface-container/50 text-on-surface-variant border-outline-variant/10"}`}>
                       {s}
                     </button>
                   );
@@ -514,11 +582,11 @@ function EditModal({ disaster, onClose, onSuccess }: { disaster: Disaster; onClo
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Status</label>
+              <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">Status</label>
               <div className="grid grid-cols-3 gap-2">
                 {(["active", "monitoring", "resolved"] as const).map(s => (
                   <button key={s} type="button" onClick={() => setForm(f => ({ ...f, status: s }))}
-                    className={`py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${form.status === s ? "bg-primary/15 text-primary border-primary/30" : "bg-surface-container/50 text-on-surface-variant border-outline-variant/10"}`}>
+                    className={`py-2 rounded-xl text-sm font-black uppercase tracking-widest transition-all border ${form.status === s ? "bg-primary/15 text-primary border-primary/30" : "bg-surface-container/50 text-on-surface-variant border-outline-variant/10"}`}>
                     {s}
                   </button>
                 ))}
@@ -606,6 +674,7 @@ export default function AdminDisastersPage() {
   const [disasters, setDisasters] = useState<Disaster[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const searchParams = useSearchParams();
 
   // Filters
   const [search, setSearch] = useState("");
@@ -624,6 +693,12 @@ export default function AdminDisastersPage() {
   const [viewDisaster, setViewDisaster] = useState<Disaster | null>(null);
   const [editDisaster, setEditDisaster] = useState<Disaster | null>(null);
   const [deleteDisaster, setDeleteDisaster] = useState<Disaster | null>(null);
+
+  useEffect(() => {
+    if (searchParams.get("new") === "1") {
+      setReportModal(true);
+    }
+  }, [searchParams]);
 
   const loadDisasters = useCallback(async () => {
     try {
@@ -691,7 +766,7 @@ export default function AdminDisastersPage() {
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
-              <p className="text-primary font-black uppercase tracking-widest text-[10px] mb-1">INCIDENT COMMAND MODULE</p>
+              <p className="text-primary font-black uppercase tracking-widest text-sm mb-1">INCIDENT COMMAND MODULE</p>
               <h1 className="text-4xl font-black tracking-tight uppercase font-['Space_Grotesk'] text-white">Disaster Operations</h1>
               <p className="text-on-surface-variant text-sm mt-1 max-w-xl">Global monitoring and deployment interface for high-priority emergency responses.</p>
             </div>
@@ -714,8 +789,8 @@ export default function AdminDisastersPage() {
               <div key={s.label} className="bg-surface-container-low p-5 rounded-xl border-l-4 relative overflow-hidden" style={{ borderLeftColor: s.color }}>
                 <div className="flex flex-col">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-on-surface-variant text-[9px] uppercase tracking-widest font-bold">{s.label}</span>
-                    <span className="text-[9px] font-black px-2 py-0.5 rounded" style={{ color: s.color, background: `${s.color}18` }}>{s.badge}</span>
+                    <span className="text-on-surface-variant text-xs uppercase tracking-widest font-bold">{s.label}</span>
+                    <span className="text-xs font-black px-2 py-0.5 rounded" style={{ color: s.color, background: `${s.color}18` }}>{s.badge}</span>
                   </div>
                   <span className="text-3xl font-black text-white font-['Space_Grotesk']">{loading ? "—" : s.value.toLocaleString()}</span>
                 </div>
@@ -787,12 +862,12 @@ export default function AdminDisastersPage() {
             {showDateRange && (
               <div className="border-t border-outline-variant/10 px-6 py-4 flex flex-wrap gap-4 items-center bg-surface-container-lowest/50">
                 <div className="flex items-center gap-3">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">From</label>
+                  <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">From</label>
                   <input type="date" value={dateFrom} onChange={e => { setDateFrom(e.target.value); handleFilterChange(); }}
                     className="bg-surface-container border border-outline-variant/15 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-primary/40" />
                 </div>
                 <div className="flex items-center gap-3">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant">To</label>
+                  <label className="text-sm font-black uppercase tracking-widest text-on-surface-variant">To</label>
                   <input type="date" value={dateTo} onChange={e => { setDateTo(e.target.value); handleFilterChange(); }}
                     className="bg-surface-container border border-outline-variant/15 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-primary/40" />
                 </div>
@@ -807,7 +882,7 @@ export default function AdminDisastersPage() {
                 <thead>
                   <tr className="bg-surface-container border-b border-outline-variant/15">
                     {["ID", "Title", "Type", "Location", "Severity", "Status", "Reported By", "Date", "Actions"].map((h, i) => (
-                      <th key={h} className={`px-5 py-4 text-[9px] font-black uppercase tracking-widest text-on-surface-variant ${i === 8 ? "text-right" : ""}`}>{h}</th>
+                      <th key={h} className={`px-5 py-4 text-xs font-black uppercase tracking-widest text-on-surface-variant ${i === 8 ? "text-right" : ""}`}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -838,14 +913,14 @@ export default function AdminDisastersPage() {
                           <td className="px-5 py-4 text-xs font-mono text-primary">#DIS-{String(d.id).padStart(4, "0")}</td>
                           <td className="px-5 py-4 text-sm font-bold text-white max-w-[200px] truncate" title={d.title}>{d.title}</td>
                           <td className="px-5 py-4">
-                            <span className="flex items-center gap-1.5 text-[10px] font-black bg-surface-container-high border border-outline-variant/15 px-2 py-1 rounded w-fit">
+                            <span className="flex items-center gap-1.5 text-sm font-black bg-surface-container-high border border-outline-variant/15 px-2 py-1 rounded w-fit">
                               <span className="material-symbols-outlined text-xs text-on-surface-variant">{getTypeIcon(d.type)}</span>
                               <span className="text-on-surface-variant uppercase">{d.type}</span>
                             </span>
                           </td>
                           <td className="px-5 py-4 text-xs text-on-surface-variant max-w-[140px] truncate">{d.location || "—"}</td>
                           <td className="px-5 py-4">
-                            <span className={`text-[10px] font-black px-2.5 py-1 rounded-full border ${sc.bg} ${sc.text} ${sc.border}`}>{sc.label}</span>
+                            <span className={`text-sm font-black px-2.5 py-1 rounded-full border ${sc.bg} ${sc.text} ${sc.border}`}>{sc.label}</span>
                           </td>
                           <td className="px-5 py-4">
                             <div className="flex items-center gap-2">
@@ -883,7 +958,7 @@ export default function AdminDisastersPage() {
 
             {/* Pagination */}
             <div className="px-6 py-4 bg-surface-container/50 border-t border-outline-variant/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
+              <span className="text-sm font-bold text-on-surface-variant uppercase tracking-widest">
                 Showing {filtered.length === 0 ? 0 : (page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length} entries
               </span>
               <div className="flex gap-1.5 items-center">

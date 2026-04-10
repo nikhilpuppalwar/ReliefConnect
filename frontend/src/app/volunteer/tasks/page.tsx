@@ -61,10 +61,10 @@ export default function VolunteerTasks() {
     if (!user || !volunteer) return;
     setIsUpdatingAvailability(true);
     try {
-      const newStatus = volunteer.availability_status === "AVAILABLE" ? "BUSY" : "AVAILABLE";
-      const res = await fetchApi(`\/volunteers/${user.id}/availability`, {
+      const newStatus = (volunteer.availability_status || volunteer.availability)?.toUpperCase() === "AVAILABLE" ? "busy" : "available";
+      const res = await fetchApi(`/volunteers/${user.id}/availability`, {
         method: "PUT",
-        body: JSON.stringify({ availability_status: newStatus })
+        body: JSON.stringify({ availability_status: newStatus.toLowerCase() })
       });
       setVolunteer(res.data);
     } catch (err) {
@@ -178,7 +178,7 @@ export default function VolunteerTasks() {
                       <thead>
                         <tr className="text-slate-400 text-[10px] uppercase tracking-widest font-bold">
                           <th className="px-6 py-4 border-b border-slate-800">Task Title</th>
-                          <th className="px-6 py-4 border-b border-slate-800 hidden sm:table-cell">Priority</th>
+                          <th className="px-6 py-4 border-b border-slate-800">Priority</th>
                           <th className="px-6 py-4 border-b border-slate-800 hidden md:table-cell">Location</th>
                           <th className="px-6 py-4 border-b border-slate-800">Status</th>
                           <th className="px-6 py-4 border-b border-slate-800 text-right">Action</th>
@@ -193,7 +193,7 @@ export default function VolunteerTasks() {
                                 <span className="text-[10px] text-slate-500 font-mono">ID: RC-{task.id}</span>
                               </div>
                             </td>
-                            <td className="px-6 py-5 hidden sm:table-cell">
+                            <td className="px-6 py-5">
                               <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase
                                 ${task.priority === 'critical' ? 'bg-red-500/20 text-red-400' :
                                   task.priority === 'high' ? 'bg-orange-500/20 text-orange-400' :
@@ -203,7 +203,7 @@ export default function VolunteerTasks() {
                                 {task.priority}
                               </span>
                             </td>
-                            <td className="px-6 py-5 text-slate-400 hidden md:table-cell text-xs">{task.location || "N/A"}</td>
+                            <td className="px-6 py-5 text-slate-400 hidden md:table-cell text-xs">{task.disaster_location || "N/A"}</td>
                             <td className="px-6 py-5">
                               {task.status === "completed" ? (
                                 <span className="flex items-center gap-1.5 text-green-400">

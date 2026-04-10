@@ -19,7 +19,7 @@ export default function VolunteerNavBar({
   const { user } = useAuth();
   const pathname = usePathname();
 
-  const isAvailable = volunteer?.availability_status === "AVAILABLE";
+  const isAvailable = (volunteer?.availability_status || volunteer?.availability)?.toUpperCase() === "AVAILABLE";
 
   const renderNavLink = (href: string, label: string) => {
     // Basic active state check

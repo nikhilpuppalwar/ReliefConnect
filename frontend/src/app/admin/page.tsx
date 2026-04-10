@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useMemo } from "react";
+import AdminNavLinks from "@/components/AdminNavLinks";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { fetchApi } from "@/lib/api";
@@ -121,7 +122,7 @@ function DispatchModal({
             </div>
             <div>
               <h2 className="text-base font-black text-white uppercase tracking-tight font-['Space_Grotesk']">New Dispatch</h2>
-              <p className="text-[10px] text-[#ffb3ad]/60">Assign mission task to a volunteer</p>
+              <p className="text-sm text-[#ffb3ad]/60">Assign mission task to a volunteer</p>
             </div>
           </div>
           <button onClick={onClose} disabled={submitting}
@@ -142,7 +143,7 @@ function DispatchModal({
           <form onSubmit={handleSubmit} className="px-8 py-6 space-y-5">
             {/* Title */}
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-[#ffb3ad]/70">Title <span className="text-error">*</span></label>
+              <label className="text-sm font-black uppercase tracking-widest text-[#ffb3ad]/70">Title <span className="text-error">*</span></label>
               <input
                 required
                 type="text"
@@ -156,7 +157,7 @@ function DispatchModal({
 
             {/* Description */}
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-[#ffb3ad]/70">Description</label>
+              <label className="text-sm font-black uppercase tracking-widest text-[#ffb3ad]/70">Description</label>
               <textarea
                 rows={3}
                 value={form.description}
@@ -170,7 +171,7 @@ function DispatchModal({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {/* Disaster */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-[#ffb3ad]/70">Disaster Zone <span className="text-error">*</span></label>
+                <label className="text-sm font-black uppercase tracking-widest text-[#ffb3ad]/70">Disaster Zone <span className="text-error">*</span></label>
                 <select
                   required
                   value={form.disaster_id}
@@ -187,7 +188,7 @@ function DispatchModal({
 
               {/* Volunteer */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-[#ffb3ad]/70">Assign Volunteer <span className="text-error">*</span></label>
+                <label className="text-sm font-black uppercase tracking-widest text-[#ffb3ad]/70">Assign Volunteer <span className="text-error">*</span></label>
                 <select
                   required
                   value={form.volunteer_id}
@@ -205,7 +206,7 @@ function DispatchModal({
 
             {/* Due Date */}
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-[#ffb3ad]/70">Due Date / Deadline</label>
+              <label className="text-sm font-black uppercase tracking-widest text-[#ffb3ad]/70">Due Date / Deadline</label>
               <input
                 type="datetime-local"
                 value={form.due_date}
@@ -274,7 +275,7 @@ function EmergencyModeModal({ onClose }: { onClose: (activated: boolean) => void
 
         <div className="px-8 py-6 space-y-5">
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-error/70">Alert Severity</label>
+            <label className="text-sm font-black uppercase tracking-widest text-error/70">Alert Severity</label>
             <div className="grid grid-cols-2 gap-3">
               {(["high", "critical"] as const).map(s => (
                 <button key={s} type="button" onClick={() => setSeverity(s)}
@@ -291,7 +292,7 @@ function EmergencyModeModal({ onClose }: { onClose: (activated: boolean) => void
           </div>
 
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-error/70">Emergency Broadcast Message</label>
+            <label className="text-sm font-black uppercase tracking-widest text-error/70">Emergency Broadcast Message</label>
             <textarea
               rows={3}
               value={broadcast}
@@ -470,7 +471,7 @@ export default function AdminDashboard() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#0d131f]">
         <div className="w-12 h-12 border-2 border-primary border-t-transparent rounded-full animate-spin mb-4" />
-        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-on-surface-variant">Loading Command Center...</p>
+        <p className="text-sm font-black uppercase tracking-[0.3em] text-on-surface-variant">Loading Command Center...</p>
       </div>
     );
   }
@@ -508,8 +509,8 @@ export default function AdminDashboard() {
                 </div>
                 <div>
                   <p className="text-sm font-black text-white">{user?.name || "Admin"}</p>
-                  <p className="text-[10px] text-[#ffb3ad] font-bold uppercase tracking-widest">Global Overseer</p>
-                  <p className="text-[10px] text-on-surface-variant">{user?.email}</p>
+                  <p className="text-sm text-[#ffb3ad] font-bold uppercase tracking-widest">Global Overseer</p>
+                  <p className="text-sm text-on-surface-variant">{user?.email}</p>
                 </div>
               </div>
             </div>
@@ -540,7 +541,7 @@ export default function AdminDashboard() {
       {/* ── TOP NAV BAR ────────────────────────────────────────────────── */}
       <header className={`sticky top-0 z-50 w-full backdrop-blur-xl border-b transition-colors ${emergencyActive ? "bg-error/20 border-error/40" : "bg-[#0d131f]/95 border-[#ffb3ad]/10"}`}>
         {emergencyActive && (
-          <div className="w-full bg-error text-white text-center py-1.5 text-[10px] font-black uppercase tracking-[0.25em] flex items-center justify-center gap-2">
+          <div className="w-full bg-error text-white text-center py-1.5 text-sm font-black uppercase tracking-[0.25em] flex items-center justify-center gap-2">
             <span className="material-symbols-outlined text-xs animate-pulse">warning</span>
             EMERGENCY MODE ACTIVE — ALL UNITS ON STANDBY
             <button onClick={() => setEmergencyActive(false)} className="ml-3 underline text-white/80 hover:text-white">Deactivate</button>
@@ -554,48 +555,32 @@ export default function AdminDashboard() {
             </div>
             <div>
               <span className="text-xl font-black text-[#E53E3E] font-['Space_Grotesk'] tracking-tighter uppercase block leading-none">ReliefConnect</span>
-              <span className="text-[9px] font-black text-on-surface-variant uppercase tracking-[0.15em]">Command Center</span>
+              <span className="text-xs font-black text-on-surface-variant uppercase tracking-[0.15em]">Command Center</span>
             </div>
           </div>
 
           {/* Nav links - hidden on smaller screens */}
-          <nav className="hidden xl:flex items-center gap-1 flex-1 justify-center">
-            {[
-              { label: "Dashboard", href: "/admin", icon: "dashboard" },
-              { label: "Disasters", href: "/admin/disasters", icon: "public" },
-              { label: "Volunteers", href: "/admin/volunteers", icon: "diversity_3" },
-              { label: "SOS Requests", href: "/admin/sos", icon: "contact_emergency" },
-              { label: "Tasks", href: "/admin/tasks", icon: "rule" },
-              { label: "Assets", href: "/admin/assets", icon: "inventory" },
-              { label: "Certificates", href: "/admin/certificates", icon: "military_tech" },
-            ].map(item => (
-              <button key={item.label}
-                onClick={() => router.push(item.href)}
-                className={`px-3 py-2 font-black text-[10px] tracking-[0.12em] uppercase transition-all rounded-lg hover:text-primary hover:bg-primary/5 ${item.href === "/admin" ? "text-primary border-b-2 border-primary" : "text-on-surface/60"}`}>
-                {item.label}
-              </button>
-            ))}
-          </nav>
+          <AdminNavLinks />
 
           {/* Right actions */}
           <div className="flex items-center gap-3 shrink-0">
             {/* New Dispatch */}
             <button
               onClick={() => setShowDispatchModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-primary text-white font-black text-[10px] uppercase tracking-widest rounded-xl shadow-[0_4px_16px_rgba(229,62,62,0.3)] hover:brightness-110 active:scale-95 transition-all">
+              className="flex items-center gap-2 px-4 py-2 bg-primary text-white font-black text-sm uppercase tracking-widest rounded-xl shadow-[0_4px_16px_rgba(229,62,62,0.3)] hover:brightness-110 active:scale-95 transition-all">
               <span className="material-symbols-outlined text-sm">add_circle</span>
-              <span className="hidden sm:inline">New Dispatch</span>
+              <span className="hidden 2xl:inline">New Dispatch</span><span className="hidden lg:inline 2xl:hidden">Dispatch</span>
             </button>
 
             {/* Emergency Mode */}
             <button
               onClick={() => setShowEmergencyModal(true)}
-              className={`px-4 py-2 font-black text-[10px] uppercase tracking-widest rounded-xl border transition-all hover:scale-105 active:scale-95 ${
+              className={`px-4 py-2 font-black text-sm uppercase tracking-widest rounded-xl border transition-all hover:scale-105 active:scale-95 ${
                 emergencyActive
                   ? "bg-error text-white border-error animate-pulse"
                   : "bg-error/10 text-error border-error/30 hover:bg-error hover:text-white"
               }`}>
-              <span className="hidden sm:inline">Emergency Mode</span>
+              <span className="hidden 2xl:inline">Emergency Mode</span><span className="hidden lg:inline 2xl:hidden">Emergency</span>
               <span className="sm:hidden material-symbols-outlined text-sm">warning</span>
             </button>
 
@@ -614,8 +599,8 @@ export default function AdminDashboard() {
             <button onClick={() => setProfileOpen(!profileOpen)}
               className="flex items-center gap-2.5 hover:opacity-90 transition-opacity">
               <div className="text-right hidden sm:block">
-                <p className="text-[10px] font-black text-[#ffb3ad] leading-none">{user?.name?.toUpperCase() || "ADMIN"}</p>
-                <p className="text-[9px] text-on-surface-variant tracking-wider">Global Overseer</p>
+                <p className="text-sm font-black text-[#ffb3ad] leading-none">{user?.name?.toUpperCase() || "ADMIN"}</p>
+                <p className="text-xs text-on-surface-variant tracking-wider">Global Overseer</p>
               </div>
               <div className="w-9 h-9 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary font-black text-sm">
                 {user?.avatar_url
@@ -651,12 +636,12 @@ export default function AdminDashboard() {
                 style={{ borderLeftColor: card.borderColor }}>
                 <div className="flex justify-between items-start mb-4">
                   <span className="material-symbols-outlined" style={{ color: card.borderColor }}>{card.icon}</span>
-                  <span className="text-[9px] font-black px-2 py-1 rounded" style={{ color: card.badgeColor, background: `${card.badgeColor}18` }}>{card.badge}</span>
+                  <span className="text-xs font-black px-2 py-1 rounded" style={{ color: card.badgeColor, background: `${card.badgeColor}18` }}>{card.badge}</span>
                 </div>
                 <h3 className="text-2xl font-black text-white font-['Space_Grotesk'] leading-none">
                   {loading ? "—" : card.value.toLocaleString()}
                 </h3>
-                <p className="text-[9px] font-bold uppercase tracking-widest text-on-surface-variant mt-1">{card.label}</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mt-1">{card.label}</p>
               </div>
             ))}
           </div>
@@ -682,7 +667,7 @@ export default function AdminDashboard() {
                         const pct = Math.round((count / disasters.length) * 100);
                         return (
                           <div key={type}>
-                            <div className="flex justify-between text-[10px] uppercase tracking-widest font-black mb-2">
+                            <div className="flex justify-between text-sm uppercase tracking-widest font-black mb-2">
                               <span className="text-on-surface-variant">{type}</span>
                               <span style={{ color: colors[i] }}>{pct}%</span>
                             </div>
@@ -698,7 +683,7 @@ export default function AdminDashboard() {
                           return (
                             <div key={type} className="flex items-center gap-1.5">
                               <div className="w-2 h-2 rounded-full" style={{ backgroundColor: colors[i] }} />
-                              <span className="text-[10px] text-on-surface-variant">{type}</span>
+                              <span className="text-sm text-on-surface-variant">{type}</span>
                             </div>
                           );
                         })}
@@ -713,7 +698,7 @@ export default function AdminDashboard() {
                   <div className="space-y-5">
                     {taskStatusMatrix.map(s => (
                       <div key={s.label}>
-                        <div className="flex justify-between text-[10px] uppercase tracking-widest font-black mb-2">
+                        <div className="flex justify-between text-sm uppercase tracking-widest font-black mb-2">
                           <span className="text-on-surface-variant">{s.label}</span>
                           <span style={{ color: s.color }}>{s.pct}% ({s.count})</span>
                         </div>
@@ -723,7 +708,7 @@ export default function AdminDashboard() {
                       </div>
                     ))}
                     <div className="pt-3 border-t border-outline-variant/10">
-                      <p className="text-[10px] text-on-surface-variant">Total Tasks: <span className="text-white font-black">{tasks.length}</span></p>
+                      <p className="text-sm text-on-surface-variant">Total Tasks: <span className="text-white font-black">{tasks.length}</span></p>
                     </div>
                   </div>
                 </div>
@@ -735,7 +720,7 @@ export default function AdminDashboard() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   {[
                     { label: "New Dispatch", icon: "add_circle", color: "#E53E3E", action: () => setShowDispatchModal(true) },
-                    { label: "Add Disaster", icon: "add_location_alt", color: "#ff8c42", action: () => router.push("/admin/disasters/new") },
+                    { label: "Add Disaster", icon: "add_location_alt", color: "#ff8c42", action: () => router.push("/admin/disasters?new=1") },
                     { label: "Manage Volunteers", icon: "diversity_3", color: "#60a5fa", action: () => router.push("/admin/volunteers") },
                     { label: "Issue Certificate", icon: "military_tech", color: "#4ade80", action: () => router.push("/admin/certificates") },
                     { label: "View SOS Queue", icon: "contact_emergency", color: "#fbbf24", action: () => router.push("/admin/sos") },
@@ -762,14 +747,14 @@ export default function AdminDashboard() {
               <div className="bg-surface-container-low rounded-xl border border-outline-variant/5 overflow-hidden">
                 <div className="px-6 py-4 border-b border-outline-variant/10 flex items-center justify-between">
                   <h4 className="font-black text-sm uppercase tracking-widest text-white">Recent Disasters</h4>
-                  <button onClick={() => router.push("/admin/disasters")} className="text-[10px] font-black uppercase tracking-widest text-primary hover:underline">View All</button>
+                  <button onClick={() => router.push("/admin/disasters")} className="text-sm font-black uppercase tracking-widest text-primary hover:underline">View All</button>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
                     <thead className="bg-surface-container border-b border-outline-variant/10">
                       <tr>
                         {["ID", "Title", "Type", "Severity", "Status", "Location"].map(h => (
-                          <th key={h} className="px-5 py-3 text-[9px] font-black uppercase tracking-widest text-on-surface-variant">{h}</th>
+                          <th key={h} className="px-5 py-3 text-xs font-black uppercase tracking-widest text-on-surface-variant">{h}</th>
                         ))}
                       </tr>
                     </thead>
@@ -781,7 +766,7 @@ export default function AdminDashboard() {
                           <td className="px-5 py-3 font-bold text-white max-w-[200px] truncate">{d.title}</td>
                           <td className="px-5 py-3 text-on-surface-variant capitalize">{d.type}</td>
                           <td className="px-5 py-3">
-                            <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase ${
+                            <span className={`px-2 py-0.5 rounded text-xs font-black uppercase ${
                               d.severity === "critical" ? "bg-red-500/20 text-red-400" :
                               d.severity === "high" ? "bg-orange-500/20 text-orange-400" :
                               d.severity === "medium" ? "bg-yellow-500/20 text-yellow-400" :
@@ -790,7 +775,7 @@ export default function AdminDashboard() {
                             </span>
                           </td>
                           <td className="px-5 py-3">
-                            <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase ${d.status === "active" ? "bg-red-500/15 text-red-400" : d.status === "resolved" ? "bg-green-500/15 text-green-400" : "bg-blue-500/15 text-blue-400"}`}>
+                            <span className={`px-2 py-0.5 rounded text-xs font-black uppercase ${d.status === "active" ? "bg-red-500/15 text-red-400" : d.status === "resolved" ? "bg-green-500/15 text-green-400" : "bg-blue-500/15 text-blue-400"}`}>
                               {d.status}
                             </span>
                           </td>
@@ -814,7 +799,7 @@ export default function AdminDashboard() {
                     <h4 className="font-black text-sm uppercase tracking-widest text-[#E53E3E]">LIVE DISPATCH LOG</h4>
                     <div className="flex items-center gap-2">
                       <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_6px_rgba(34,197,94,0.6)]" />
-                      <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Live</span>
+                      <span className="text-sm font-bold text-on-surface-variant uppercase tracking-widest">Live</span>
                     </div>
                   </div>
                 </div>
@@ -829,8 +814,8 @@ export default function AdminDashboard() {
                       <div className="space-y-1">
                         <p className="text-xs text-on-surface leading-relaxed">{event.text}</p>
                         <div className="flex items-center justify-between">
-                          <span className="text-[9px] font-black uppercase tracking-widest" style={{ color: event.color }}>{event.meta}</span>
-                          <span className="text-[9px] text-on-surface-variant">{timeAgo(event.time)}</span>
+                          <span className="text-xs font-black uppercase tracking-widest" style={{ color: event.color }}>{event.meta}</span>
+                          <span className="text-xs text-on-surface-variant">{timeAgo(event.time)}</span>
                         </div>
                       </div>
                     </div>
@@ -839,7 +824,7 @@ export default function AdminDashboard() {
 
                 <button
                   onClick={() => router.push("/admin/tasks")}
-                  className="w-full py-4 text-[10px] font-black text-on-surface-variant uppercase tracking-[0.2em] bg-surface-container-highest hover:bg-surface-variant transition-all border-t border-[#ffb3ad]/10 hover:text-white">
+                  className="w-full py-4 text-sm font-black text-on-surface-variant uppercase tracking-[0.2em] bg-surface-container-highest hover:bg-surface-variant transition-all border-t border-[#ffb3ad]/10 hover:text-white">
                   View Historical Archives
                 </button>
               </div>
@@ -849,7 +834,7 @@ export default function AdminDashboard() {
 
         {/* Footer */}
         <footer className="mt-12 border-t border-[#ffb3ad]/5 px-6 py-6 flex flex-col md:flex-row justify-between items-center gap-4 text-on-surface-variant">
-          <p className="text-[10px] font-black tracking-widest uppercase">© 2026 ReliefConnect Sentinel · Protocol v4.8.2-Alpha</p>
+          <p className="text-sm font-black tracking-widest uppercase">© 2026 ReliefConnect Sentinel · Protocol v4.8.2-Alpha</p>
           <div className="flex items-center gap-6">
             {[
               { color: "#4ade80", label: "System Operational" },
@@ -858,7 +843,7 @@ export default function AdminDashboard() {
             ].map(s => (
               <div key={s.label} className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: s.color }} />
-                <span className="text-[10px] font-black tracking-widest uppercase">{s.label}</span>
+                <span className="text-sm font-black tracking-widest uppercase">{s.label}</span>
               </div>
             ))}
           </div>

@@ -8,7 +8,7 @@ export default function Page() {
 <aside className="fixed left-0 top-0 h-full w-64 z-40 bg-[#0d131f] flex flex-col py-6 border-r border-[#ffb3ad]/15 shadow-[32px_0_32px_rgba(255,179,173,0.06)]">
 <div className="px-6 mb-10">
 <h1 className="text-xl font-black text-[#ffb3ad] tracking-tighter font-headline">RELIEFCONNECT</h1>
-<p className="text-[10px] tracking-[0.2em] font-headline font-bold text-[#ffb3ad]/60">SENTINEL COMMAND</p>
+<p className="text-sm tracking-[0.2em] font-headline font-bold text-[#ffb3ad]/60">SENTINEL COMMAND</p>
 </div>
 <nav className="flex-1 px-3 space-y-1">
 <a className="flex items-center gap-3 px-4 py-3 font-['Space_Grotesk'] tracking-tight text-sm uppercase text-[#dde2f3]/60 hover:bg-[#1a202c] hover:text-[#dde2f3] transition-all duration-200" href="#">
@@ -63,7 +63,7 @@ export default function Page() {
 <div className="flex items-center gap-3 pl-4 border-l border-[#ffb3ad]/10">
 <div className="text-right">
 <p className="text-sm font-bold font-headline text-on-surface uppercase tracking-tighter">Command_Admin</p>
-<p className="text-[10px] text-primary font-bold uppercase tracking-widest">Level 5 Clearance</p>
+<p className="text-sm text-primary font-bold uppercase tracking-widest">Level 5 Clearance</p>
 </div>
 <img alt="Administrator" className="w-10 h-10 rounded-full border-2 border-primary/20" data-alt="professional male administrator portrait in studio lighting with deep shadows and dark corporate attire" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBiaKFrJuiEVHY6B75MPt3DndF4h4xeWF9Y8EUseZzarrSwrYVMPdNS9AJja6-IVz9Kv2reRQFjk-qG9eLrIwihXaMIOU4njzxkKaOECXRr4FWV77AFtRRwwFCHVrwXBnRfNXn5ff7ql_s-iFr_IDXZwgK28rPUwXABSTkhr5FkNwVLZ9xH2QuRJimJghEgF-GIRJJKWjvd_CFvBx4iZQQ0LT0HBvw_dLGfmjnZgGrEYr6IaLm8oLZbHD7R0td1Oq3BttbG98CR2g"/>
 </div>
@@ -111,14 +111,14 @@ export default function Page() {
 <div className="w-2 h-6 bg-error"></div>
 <h3 className="font-headline font-bold uppercase tracking-tighter text-xl">PENDING</h3>
 </div>
-<span className="bg-error/10 text-error text-[10px] font-black px-2 py-0.5 rounded-full border border-error/20">08</span>
+<span className="bg-error/10 text-error text-sm font-black px-2 py-0.5 rounded-full border border-error/20">08</span>
 </div>
 <div className="space-y-4">
 {/* Card 1 */}
 <div className="bg-surface-container-low p-5 rounded-xl border-l-4 border-error hover:translate-y-[-4px] transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.3)] group">
 <div className="flex justify-between items-start mb-4">
-<span className="bg-error/20 text-error text-[10px] font-bold tracking-widest uppercase px-2 py-1 rounded">CRITICAL</span>
-<span className="text-[10px] text-on-surface-variant/40 font-mono">#RQ-4092</span>
+<span className="bg-error/20 text-error text-sm font-bold tracking-widest uppercase px-2 py-1 rounded">CRITICAL</span>
+<span className="text-sm text-on-surface-variant/40 font-mono">#RQ-4092</span>
 </div>
 <h4 className="text-lg font-bold font-headline mb-1 group-hover:text-primary transition-colors">Elena Rodriguez</h4>
 <div className="flex items-center gap-1 text-on-surface-variant/60 text-xs mb-3">
@@ -132,8 +132,8 @@ export default function Page() {
 {/* Card 2 */}
 <div className="bg-surface-container-low p-5 rounded-xl border-l-4 border-error hover:translate-y-[-4px] transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.3)] group">
 <div className="flex justify-between items-start mb-4">
-<span className="bg-error/20 text-error text-[10px] font-bold tracking-widest uppercase px-2 py-1 rounded">CRITICAL</span>
-<span className="text-[10px] text-on-surface-variant/40 font-mono">#RQ-4101</span>
+<span className="bg-error/20 text-error text-sm font-bold tracking-widest uppercase px-2 py-1 rounded">CRITICAL</span>
+<span className="text-sm text-on-surface-variant/40 font-mono">#RQ-4101</span>
 </div>
 <h4 className="text-lg font-bold font-headline mb-1 group-hover:text-primary transition-colors">Marcus Thorne</h4>
 <div className="flex items-center gap-1 text-on-surface-variant/60 text-xs mb-3">
@@ -153,13 +153,13 @@ export default function Page() {
 <div className="w-2 h-6 bg-secondary"></div>
 <h3 className="font-headline font-bold uppercase tracking-tighter text-xl">ASSIGNED</h3>
 </div>
-<span className="bg-secondary/10 text-secondary text-[10px] font-black px-2 py-0.5 rounded-full border border-secondary/20">12</span>
+<span className="bg-secondary/10 text-secondary text-sm font-black px-2 py-0.5 rounded-full border border-secondary/20">12</span>
 </div>
 <div className="space-y-4">
 <div className="bg-surface-container-low p-5 rounded-xl border-l-4 border-secondary hover:translate-y-[-4px] transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.3)] group">
 <div className="flex justify-between items-start mb-4">
-<span className="bg-secondary/20 text-secondary text-[10px] font-bold tracking-widest uppercase px-2 py-1 rounded">MODERATE</span>
-<span className="text-[10px] text-on-surface-variant/40 font-mono">#RQ-3982</span>
+<span className="bg-secondary/20 text-secondary text-sm font-bold tracking-widest uppercase px-2 py-1 rounded">MODERATE</span>
+<span className="text-sm text-on-surface-variant/40 font-mono">#RQ-3982</span>
 </div>
 <h4 className="text-lg font-bold font-headline mb-1">Sarah Jenkins</h4>
 <div className="flex items-center gap-1 text-on-surface-variant/60 text-xs mb-4">
@@ -168,7 +168,7 @@ export default function Page() {
 <div className="bg-surface-container p-3 rounded-lg flex items-center gap-3">
 <img alt="Volunteer" className="w-8 h-8 rounded-full" data-alt="volunteer male face close up with professional expression and neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2AbWGyJ7aKtjkLptC8h5y-NKDPxKxoNZzpxTefV3_khr2h9CFWxszbb6ohbyu4ZX5RNwBREYS0KAMs0TIWkXLtJKCHRu14phAe7Ik_l7-psRMopZV_anXZTBrpse5tyk8u0ro9seoXVGvlRVnYEO_QorCG873hdbZvOSKYSXCTssdDJqABRu7jfYN-ewEPEaF2Up029ngry_6HJ0CyYf5xgJP54jK-W_FRGKzM_SzU9KHOFzUODj1kGZw4UYg_OVbBVHHTuN5cQ"/>
 <div>
-<p className="text-[10px] text-primary uppercase font-bold tracking-widest">ASSIGNED TO</p>
+<p className="text-sm text-primary uppercase font-bold tracking-widest">ASSIGNED TO</p>
 <p className="text-xs font-bold text-on-surface">Alex Chen</p>
 </div>
 </div>
@@ -182,13 +182,13 @@ export default function Page() {
 <div className="w-2 h-6 bg-blue-500"></div>
 <h3 className="font-headline font-bold uppercase tracking-tighter text-xl">IN PROGRESS</h3>
 </div>
-<span className="bg-blue-500/10 text-blue-500 text-[10px] font-black px-2 py-0.5 rounded-full border border-blue-500/20">05</span>
+<span className="bg-blue-500/10 text-blue-500 text-sm font-black px-2 py-0.5 rounded-full border border-blue-500/20">05</span>
 </div>
 <div className="space-y-4">
 <div className="bg-surface-container-low p-5 rounded-xl border-l-4 border-blue-500 hover:translate-y-[-4px] transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.3)] group">
 <div className="flex justify-between items-start mb-4">
-<span className="bg-blue-500/20 text-blue-500 text-[10px] font-bold tracking-widest uppercase px-2 py-1 rounded">HIGH</span>
-<span className="text-[10px] text-on-surface-variant/40 font-mono">#RQ-3811</span>
+<span className="bg-blue-500/20 text-blue-500 text-sm font-bold tracking-widest uppercase px-2 py-1 rounded">HIGH</span>
+<span className="text-sm text-on-surface-variant/40 font-mono">#RQ-3811</span>
 </div>
 <h4 className="text-lg font-bold font-headline mb-1">Davis Family (4)</h4>
 <div className="flex items-center gap-1 text-on-surface-variant/60 text-xs mb-4">
@@ -199,12 +199,12 @@ export default function Page() {
 <span className="material-symbols-outlined text-blue-500 text-sm" style={{"fontVariationSettings":"'FILL' 1"}}>pulse_alert</span>
 <span className="text-xs text-blue-500 font-bold uppercase tracking-widest">EN ROUTE</span>
 </div>
-<span className="text-[10px] text-on-surface-variant/60">ETA: 12 MIN</span>
+<span className="text-sm text-on-surface-variant/60">ETA: 12 MIN</span>
 </div>
 <div className="bg-surface-container p-3 rounded-lg flex items-center gap-3">
 <img alt="Volunteer" className="w-8 h-8 rounded-full" data-alt="volunteer female face portrait with determined look against soft focused natural background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBghQSJikSt9-qa3ZcmKuYfAO4_SeTkJy2ybEv9jsRt0VXrKtYUxZ6JBHyE5ddTsfdEhABMEvzqkE2BE1-IoXxxQGJfo4-LoKevytOrei0aC04gWPqKx2Dc2AUFJzt-jtQ2nN5SX5iURzhGU99p8Lsiqej2-rzA6Ijdf1NoYxAQkbgBNG2Wdz0R0bpWVtfo58kbhUFeVBdY2ku9upz_vD3gjV6dnwNHv-eXHqAe5-IdL49n4-dU-tDVuhJfgkAaXTZReHaqgjYZCA"/>
 <div>
-<p className="text-[10px] text-primary uppercase font-bold tracking-widest">ASSIGNED TO</p>
+<p className="text-sm text-primary uppercase font-bold tracking-widest">ASSIGNED TO</p>
 <p className="text-xs font-bold text-on-surface">Maya Kaur</p>
 </div>
 </div>
@@ -218,19 +218,19 @@ export default function Page() {
 <div className="w-2 h-6 bg-emerald-500"></div>
 <h3 className="font-headline font-bold uppercase tracking-tighter text-xl">RESOLVED</h3>
 </div>
-<span className="bg-emerald-500/10 text-emerald-500 text-[10px] font-black px-2 py-0.5 rounded-full border border-emerald-500/20">114</span>
+<span className="bg-emerald-500/10 text-emerald-500 text-sm font-black px-2 py-0.5 rounded-full border border-emerald-500/20">114</span>
 </div>
 <div className="space-y-4 opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-300">
 <div className="bg-surface-container-low p-5 rounded-xl border-l-4 border-emerald-500 shadow-[0_4px_20px_rgba(0,0,0,0.3)]">
 <div className="flex justify-between items-start mb-4">
-<span className="bg-emerald-500/20 text-emerald-500 text-[10px] font-bold tracking-widest uppercase px-2 py-1 rounded">COMPLETE</span>
-<span className="text-[10px] text-on-surface-variant/40 font-mono">#RQ-3745</span>
+<span className="bg-emerald-500/20 text-emerald-500 text-sm font-bold tracking-widest uppercase px-2 py-1 rounded">COMPLETE</span>
+<span className="text-sm text-on-surface-variant/40 font-mono">#RQ-3745</span>
 </div>
 <h4 className="text-lg font-bold font-headline mb-1">Urban General</h4>
 <div className="flex items-center gap-1 text-on-surface-variant/60 text-xs mb-4">
 <span className="material-symbols-outlined text-sm">location_on</span> Medical Plaza
                         </div>
-<div className="text-[10px] text-emerald-500 font-bold uppercase flex items-center gap-1">
+<div className="text-sm text-emerald-500 font-bold uppercase flex items-center gap-1">
 <span className="material-symbols-outlined text-sm">check_circle</span> SUCCESS: MEDS DELIVERED
                         </div>
 </div>
@@ -244,7 +244,7 @@ export default function Page() {
 {/* Modal Header */}
 <div className="px-8 py-6 bg-surface-container-high border-b border-outline-variant/20 flex justify-between items-center">
 <div>
-<p className="text-[10px] text-primary font-bold tracking-[0.3em] uppercase mb-1">MISSION ALLOCATION SYSTEM</p>
+<p className="text-sm text-primary font-bold tracking-[0.3em] uppercase mb-1">MISSION ALLOCATION SYSTEM</p>
 <h3 className="text-2xl font-black font-headline tracking-tighter">ASSIGN VOLUNTEER: RQ-4092</h3>
 </div>
 <button className="p-2 hover:bg-surface-variant rounded-full transition-colors">
@@ -254,7 +254,7 @@ export default function Page() {
 <div className="flex flex-1 overflow-hidden">
 {/* Left Side: Request Details */}
 <div className="w-1/3 p-8 border-r border-outline-variant/20 bg-surface-container-lowest/50 overflow-y-auto">
-<h4 className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60 mb-4">REQUEST PROFILE</h4>
+<h4 className="text-sm font-bold uppercase tracking-widest text-on-surface-variant/60 mb-4">REQUEST PROFILE</h4>
 <div className="mb-8">
 <p className="text-sm font-bold text-on-surface mb-1">CIVILIAN</p>
 <p className="text-lg text-primary font-headline font-bold">Elena Rodriguez</p>
@@ -276,7 +276,7 @@ export default function Page() {
 {/* Right Side: Volunteer Search & Selection */}
 <div className="flex-1 p-8 overflow-y-auto flex flex-col">
 <div className="flex justify-between items-center mb-6">
-<h4 className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60">AVAILABLE ASSETS</h4>
+<h4 className="text-sm font-bold uppercase tracking-widest text-on-surface-variant/60">AVAILABLE ASSETS</h4>
 <span className="text-xs font-bold text-emerald-500">14 PERSONNEL ONLINE</span>
 </div>
 {/* Search Bar */}
@@ -295,14 +295,14 @@ export default function Page() {
 </div>
 <div>
 <p className="text-sm font-bold group-hover:text-primary transition-colors">Sarah Williams</p>
-<p className="text-[10px] text-on-surface-variant/60 tracking-tighter">0.8km away • Active</p>
+<p className="text-sm text-on-surface-variant/60 tracking-tighter">0.8km away • Active</p>
 </div>
 </div>
 <div className="flex flex-wrap gap-1 mb-4">
-<span className="text-[9px] font-bold uppercase tracking-tighter bg-surface-container-highest px-1.5 py-0.5 rounded text-primary">Medical</span>
-<span className="text-[9px] font-bold uppercase tracking-tighter bg-surface-container-highest px-1.5 py-0.5 rounded text-on-surface-variant">Logistics</span>
+<span className="text-xs font-bold uppercase tracking-tighter bg-surface-container-highest px-1.5 py-0.5 rounded text-primary">Medical</span>
+<span className="text-xs font-bold uppercase tracking-tighter bg-surface-container-highest px-1.5 py-0.5 rounded text-on-surface-variant">Logistics</span>
 </div>
-<button className="w-full py-2 bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all">SELECT ASSET</button>
+<button className="w-full py-2 bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-sm font-bold uppercase tracking-widest rounded-lg transition-all">SELECT ASSET</button>
 </div>
 {/* Volunteer Item 2 */}
 <div className="p-4 bg-surface-container border border-outline-variant/10 rounded-xl hover:border-primary/50 transition-all cursor-pointer group">
@@ -313,14 +313,14 @@ export default function Page() {
 </div>
 <div>
 <p className="text-sm font-bold group-hover:text-primary transition-colors">David Miller</p>
-<p className="text-[10px] text-on-surface-variant/60 tracking-tighter">1.2km away • Active</p>
+<p className="text-sm text-on-surface-variant/60 tracking-tighter">1.2km away • Active</p>
 </div>
 </div>
 <div className="flex flex-wrap gap-1 mb-4">
-<span className="text-[9px] font-bold uppercase tracking-tighter bg-surface-container-highest px-1.5 py-0.5 rounded text-primary">Rescue</span>
-<span className="text-[9px] font-bold uppercase tracking-tighter bg-surface-container-highest px-1.5 py-0.5 rounded text-primary">EMS</span>
+<span className="text-xs font-bold uppercase tracking-tighter bg-surface-container-highest px-1.5 py-0.5 rounded text-primary">Rescue</span>
+<span className="text-xs font-bold uppercase tracking-tighter bg-surface-container-highest px-1.5 py-0.5 rounded text-primary">EMS</span>
 </div>
-<button className="w-full py-2 bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all">SELECT ASSET</button>
+<button className="w-full py-2 bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-sm font-bold uppercase tracking-widest rounded-lg transition-all">SELECT ASSET</button>
 </div>
 {/* Volunteer Item 3 */}
 <div className="p-4 bg-surface-container border border-outline-variant/10 rounded-xl hover:border-primary/50 transition-all cursor-pointer group">
@@ -331,14 +331,14 @@ export default function Page() {
 </div>
 <div>
 <p className="text-sm font-bold group-hover:text-primary transition-colors">Tanya Roberts</p>
-<p className="text-[10px] text-on-surface-variant/60 tracking-tighter">2.5km away • Active</p>
+<p className="text-sm text-on-surface-variant/60 tracking-tighter">2.5km away • Active</p>
 </div>
 </div>
 <div className="flex flex-wrap gap-1 mb-4">
-<span className="text-[9px] font-bold uppercase tracking-tighter bg-surface-container-highest px-1.5 py-0.5 rounded text-on-surface-variant">Spanish</span>
-<span className="text-[9px] font-bold uppercase tracking-tighter bg-surface-container-highest px-1.5 py-0.5 rounded text-primary">Medical</span>
+<span className="text-xs font-bold uppercase tracking-tighter bg-surface-container-highest px-1.5 py-0.5 rounded text-on-surface-variant">Spanish</span>
+<span className="text-xs font-bold uppercase tracking-tighter bg-surface-container-highest px-1.5 py-0.5 rounded text-primary">Medical</span>
 </div>
-<button className="w-full py-2 bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all">SELECT ASSET</button>
+<button className="w-full py-2 bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-sm font-bold uppercase tracking-widest rounded-lg transition-all">SELECT ASSET</button>
 </div>
 {/* Volunteer Item 4 */}
 <div className="p-4 bg-surface-container border border-outline-variant/10 rounded-xl hover:border-primary/50 transition-all cursor-pointer group">
@@ -349,14 +349,14 @@ export default function Page() {
 </div>
 <div>
 <p className="text-sm font-bold group-hover:text-primary transition-colors">Jordan Lee</p>
-<p className="text-[10px] text-on-surface-variant/60 tracking-tighter">0.5km away • Busy</p>
+<p className="text-sm text-on-surface-variant/60 tracking-tighter">0.5km away • Busy</p>
 </div>
 </div>
 <div className="flex flex-wrap gap-1 mb-4">
-<span className="text-[9px] font-bold uppercase tracking-tighter bg-surface-container-highest px-1.5 py-0.5 rounded text-primary">Supplies</span>
-<span className="text-[9px] font-bold uppercase tracking-tighter bg-surface-container-highest px-1.5 py-0.5 rounded text-on-surface-variant">Driver</span>
+<span className="text-xs font-bold uppercase tracking-tighter bg-surface-container-highest px-1.5 py-0.5 rounded text-primary">Supplies</span>
+<span className="text-xs font-bold uppercase tracking-tighter bg-surface-container-highest px-1.5 py-0.5 rounded text-on-surface-variant">Driver</span>
 </div>
-<button className="w-full py-2 bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all">SELECT ASSET</button>
+<button className="w-full py-2 bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-sm font-bold uppercase tracking-widest rounded-lg transition-all">SELECT ASSET</button>
 </div>
 </div>
 </div>

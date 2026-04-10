@@ -97,11 +97,11 @@ const createTask = async (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({ success: false, message: "Validation failed", data: errors.array() });
     }
-    const { title, description, disaster_id, volunteer_id, due_date, status = "assigned" } = req.body;
+    const { title, description, disaster_id, volunteer_id, due_date, status = "assigned", priority = "medium" } = req.body;
     const parsedDueDate = due_date ? new Date(due_date) : null;
     const [result] = await pool.query(
-      "INSERT INTO tasks (title, description, disaster_id, volunteer_id, due_date, status, created_by) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [title, description || null, disaster_id, volunteer_id, parsedDueDate, status, req.user.id]
+      "INSERT INTO tasks (title, description, disaster_id, volunteer_id, due_date, status, priority, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      [title, description || null, disaster_id, volunteer_id, parsedDueDate, status, priority, req.user.id]
     );
     return res.status(201).json({ success: true, data: { id: result.insertId, title, status } });
   } catch (error) {
@@ -159,7 +159,7 @@ const updateTaskStatus = async (req, res) => {
 // ─── PUT /api/tasks/:id  (admin: full edit) ──────────────────────────────────
 const updateTask = async (req, res) => {
   try {
-    const { title, description, disaster_id, volunteer_id, due_date, status } = req.body;
+    const { title, description, disaster_id, volunteer_id, due_date, status, priority } = req.body;
     await pool.query(
       `UPDATE tasks
        SET title        = COALESCE(?, title),
@@ -168,9 +168,10 @@ const updateTask = async (req, res) => {
            volunteer_id = COALESCE(?, volunteer_id),
            due_date     = COALESCE(?, due_date),
            status       = COALESCE(?, status),
+           priority     = COALESCE(?, priority),
            updated_at   = NOW()
        WHERE id = ?`,
-      [title || null, description || null, disaster_id || null, volunteer_id || null, due_date || null, status || null, req.params.id]
+      [title || null, description || null, disaster_id || null, volunteer_id || null, due_date || null, status || null, priority || null, req.params.id]
     );
     const [rows] = await pool.query(
       `SELECT t.*, d.title AS disaster_title, u_to.name AS assigned_to_name

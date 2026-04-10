@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { fetchApi } from "@/lib/api";
 
 type EditableField = "name" | "phone" | "location";
 
@@ -22,7 +23,23 @@ export default function CivilianProfilePage() {
     location: user?.location || "",
   });
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [stats, setStats] = useState({ sosCount: 0, reportsCount: 0, resolvedCount: 0 });
   const inputRef = useRef<HTMLInputElement>(null);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (user?.id) {
+      fetchApi(`/users/${user.id}/stats`)
+        .then((res) => {
+          if (res.success && res.data) {
+            setStats(res.data);
+          }
+        })
+        .catch(console.error);
+    }
+  }, [user?.id]);
 
   const displayName = user?.name || "Civilian User";
   const initials = displayName
@@ -32,13 +49,59 @@ export default function CivilianProfilePage() {
     .toUpperCase()
     .slice(0, 2);
 
-  function handleEditSave(field: EditableField) {
+  async function handleEditSave(field: EditableField) {
     if (editing === field) {
-      // save logic would go here (API call)
+      try {
+        await fetchApi(`/users/${user?.id}`, {
+          method: "PUT",
+          body: JSON.stringify({
+            name: formValues.name,
+            phone: formValues.phone,
+            location: formValues.location,
+          }),
+        });
+      } catch (err) {
+        console.error("Failed to update field", err);
+        alert("Failed to update profile");
+      }
       setEditing(null);
     } else {
       setEditing(field);
       setTimeout(() => inputRef.current?.focus(), 50);
+    }
+  }
+
+  async function handleAvatarUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file || !user?.id) return;
+    try {
+      const formData = new FormData();
+      formData.append("avatar", file);
+      const res = await fetchApi(`/users/${user.id}/avatar`, {
+        method: "POST",
+        body: formData,
+      });
+      if (res.success) {
+        window.location.reload();
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to upload avatar");
+    }
+  }
+
+  async function handlePasswordUpdate() {
+    if (newPassword.length < 8) return alert("Password must be at least 8 characters");
+    try {
+      await fetchApi(`/users/${user?.id}/password`, {
+        method: "PUT",
+        body: JSON.stringify({ newPassword }),
+      });
+      alert("Password updated successfully");
+      setPasswordModalOpen(false);
+      setNewPassword("");
+    } catch (err: any) {
+      alert(err.message || "Failed to update password");
     }
   }
 
@@ -88,8 +151,8 @@ export default function CivilianProfilePage() {
           <div className="max-w-5xl mx-auto px-6 py-10 relative z-10">
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
               {/* Avatar */}
-              <div className="relative flex-shrink-0">
-                <div className="w-24 h-24 rounded-2xl border-2 border-primary/30 overflow-hidden bg-surface-container-high flex items-center justify-center shadow-[0_0_30px_rgba(255,179,173,0.15)]">
+              <div className="relative flex-shrink-0 group cursor-pointer" onClick={() => avatarInputRef.current?.click()}>
+                <div className="w-24 h-24 rounded-2xl border-2 border-primary/30 overflow-hidden bg-surface-container-high flex items-center justify-center shadow-[0_0_30px_rgba(255,179,173,0.15)] relative">
                   {user?.avatar_url ? (
                     <img
                       src={user.avatar_url}
@@ -99,7 +162,18 @@ export default function CivilianProfilePage() {
                   ) : (
                     <span className="text-3xl font-black text-primary font-['Space_Grotesk']">{initials}</span>
                   )}
+                  {/* Hover Overlay */}
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                    <span className="material-symbols-outlined text-white">photo_camera</span>
+                  </div>
                 </div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={avatarInputRef}
+                  className="hidden"
+                  onChange={handleAvatarUpload}
+                />
                 <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-green-500 border-2 border-background flex items-center justify-center">
                   <span className="w-2 h-2 rounded-full bg-white" />
                 </div>
@@ -151,7 +225,11 @@ export default function CivilianProfilePage() {
                 <h2 className="text-xs font-black uppercase tracking-widest text-on-surface-variant">Activity Overview</h2>
               </div>
               <div className="divide-y divide-outline-variant/8">
-                {STAT_CARDS.map((s) => (
+                {STAT_CARDS.map((s) => {
+                  const value = s.label === "SOS Requests" ? stats.sosCount :
+                                s.label === "Reports Filed" ? stats.reportsCount : 
+                                stats.resolvedCount;
+                  return (
                   <div key={s.label} className="px-5 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div
@@ -164,9 +242,9 @@ export default function CivilianProfilePage() {
                       </div>
                       <span className="text-xs font-bold text-on-surface-variant">{s.label}</span>
                     </div>
-                    <span className="text-2xl font-black text-on-surface font-['Space_Grotesk']">—</span>
+                    <span className="text-2xl font-black text-on-surface font-['Space_Grotesk']">{value}</span>
                   </div>
-                ))}
+                )})}
               </div>
             </div>
 
@@ -346,7 +424,7 @@ export default function CivilianProfilePage() {
                   </div>
                   <button
                     type="button"
-                    onClick={() => router.push("/forgot-password")}
+                    onClick={() => setPasswordModalOpen(true)}
                     className="text-[10px] font-black uppercase tracking-widest text-primary hover:underline"
                   >
                     Change
@@ -418,6 +496,44 @@ export default function CivilianProfilePage() {
                   className="flex-1 py-3 rounded-xl font-black text-xs uppercase tracking-widest bg-error text-white hover:bg-error/90 transition-all active:scale-95"
                 >
                   Sign Out
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Password Change Modal */}
+      {passwordModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setPasswordModalOpen(false)} />
+          <div className="relative z-10 bg-surface-container-low border border-outline-variant/20 rounded-2xl p-8 mx-4 max-w-sm w-full shadow-[0_0_60px_rgba(0,0,0,0.6)]">
+            <h3 className="text-xl font-black text-on-surface uppercase tracking-tight font-['Space_Grotesk'] mb-4">Change Password</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-1 block">New Password</label>
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="w-full bg-surface-container border border-primary/30 rounded-lg px-3 py-2 text-sm text-on-surface focus:outline-none focus:border-primary/50 transition-colors"
+                  placeholder="At least 8 characters"
+                />
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setPasswordModalOpen(false)}
+                  className="flex-1 py-3 rounded-xl font-black text-xs uppercase tracking-widest border border-outline-variant/20 text-on-surface-variant hover:bg-surface-container transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handlePasswordUpdate}
+                  className="flex-1 py-3 rounded-xl font-black text-xs uppercase tracking-widest bg-primary text-on-primary-container hover:bg-primary/90 transition-all active:scale-95"
+                >
+                  Confirm
                 </button>
               </div>
             </div>

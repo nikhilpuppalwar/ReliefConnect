@@ -92,7 +92,7 @@ export default function VolunteerDashboard() {
     <>
       <VolunteerNavBar 
         volunteer={volunteer}
-        onToggleAvailability={() => handleAvailabilityToggle(volunteer?.availability === "available" ? "busy" : "available")}
+        onToggleAvailability={() => handleAvailabilityToggle((volunteer?.availability_status || volunteer?.availability)?.toUpperCase() === "AVAILABLE" ? "busy" : "available")}
         isUpdatingAvailability={updatingAvailability}
         onLogout={handleLogout}
       />
