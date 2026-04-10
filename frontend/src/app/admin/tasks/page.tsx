@@ -389,6 +389,7 @@ function EditTaskModal({ task, onClose, onSuccess }: { task: Task; onClose: () =
     title: task.title,
     description: task.description || "",
     disaster_id: task.disaster_id ? String(task.disaster_id) : "",
+    volunteer_id: task.volunteer_id ? String(task.volunteer_id) : "",
     due_date: task.due_date ? task.due_date.slice(0, 16) : "",
     status: task.status,
     priority: task.priority || "medium",
