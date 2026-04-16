@@ -283,7 +283,10 @@ function IssueCertPanel({ onSuccess }: { onSuccess: () => void }) {
       fd.append("certificate", file);
       // Use raw fetch because fetchApi sets Content-Type and breaks multipart
       const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/certificates`, {
+      // NEXT_PUBLIC_API_URL is already the full API base (e.g. "http://host/api")
+      // so we use it directly rather than appending /api again.
+      const apiBase = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api").replace(/\/$/, "");
+      const res = await fetch(`${apiBase}/certificates`, {
         method: "POST",
         headers: token ? { Authorization: `Bearer ${token}` } : {},
         body: fd,
